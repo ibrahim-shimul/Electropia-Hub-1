@@ -13,6 +13,8 @@ export default function ProductDetails() {
   const [hasJoinedGroup, setHasJoinedGroup] = useState(false);
   const [groupCurrent, setGroupCurrent] = useState(32);
   const [selectedSeller, setSelectedSeller] = useState(0);
+  const [selectedColor, setSelectedColor] = useState("White");
+  const [selectedCapacity, setSelectedCapacity] = useState("1.5 Ton");
 
   const product = {
     name: "SAFE E18KINV Intelligent Inverter Split Air Conditioner - 1.5 Ton",
@@ -140,8 +142,59 @@ export default function ProductDetails() {
                 {product.soldLast7Days} items sold in last 7 days
               </span>
             </div>
-            <div className="font-bold text-slate-800 text-lg mb-6">
+            <div className="font-bold text-slate-800 text-lg mb-5">
               {product.brand}
+            </div>
+
+            {/* Variant Selector */}
+            <div className="flex flex-col gap-4 mb-5 pb-5 border-b border-slate-100">
+              {/* Color */}
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className="text-sm font-semibold text-slate-500 w-20 shrink-0">
+                  Color: <span className="text-slate-900">{selectedColor}</span>
+                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {[
+                    { label: "White", hex: "#f1f5f9" },
+                    { label: "Black", hex: "#1e293b" },
+                    { label: "Silver", hex: "#94a3b8" },
+                  ].map(c => (
+                    <button
+                      key={c.label}
+                      onClick={() => setSelectedColor(c.label)}
+                      title={c.label}
+                      className={`w-7 h-7 rounded-full border-2 transition-all ${
+                        selectedColor === c.label
+                          ? "border-primary scale-110 shadow-md shadow-primary/20"
+                          : "border-slate-200 hover:border-primary/40"
+                      }`}
+                      style={{ backgroundColor: c.hex }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Capacity */}
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className="text-sm font-semibold text-slate-500 w-20 shrink-0">
+                  Capacity:
+                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {["1.0 Ton", "1.5 Ton", "2.0 Ton", "2.5 Ton"].map(cap => (
+                    <button
+                      key={cap}
+                      onClick={() => setSelectedCapacity(cap)}
+                      className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all ${
+                        selectedCapacity === cap
+                          ? "border-primary bg-primary/5 text-primary"
+                          : "border-slate-200 text-slate-600 hover:border-primary/40 hover:text-slate-900"
+                      }`}
+                    >
+                      {cap}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
             <div className="flex items-center gap-6 mb-6">
@@ -482,6 +535,78 @@ export default function ProductDetails() {
                           BUY NOW
                         </Button>
                       </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Available Group Deals Section */}
+            <div className="bg-white border border-slate-200 rounded-xl p-6 mt-4">
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <h2 className="font-heading font-bold text-lg text-slate-900 flex items-center gap-2">
+                    <Users className="w-5 h-5 text-primary" />
+                    Available Group Deals
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-0.5">Join a group to unlock special discounted prices</p>
+                </div>
+                <Badge className="bg-purple-100 text-purple-700 border border-purple-200 hover:bg-purple-100 font-bold">
+                  3 Active
+                </Badge>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {[
+                  { seller: "Walton Official Store", badge: "Verified Seller", badgeClass: "bg-emerald-100 text-emerald-700 border-emerald-200", groupPrice: 43999, originalPrice: 47999, joined: 32, target: 50, endsIn: "14h 20m", deposit: 500 },
+                  { seller: "Brand Direct BD", badge: "Brand Official", badgeClass: "bg-amber-100 text-amber-700 border-amber-200", groupPrice: 44500, originalPrice: 47999, joined: 18, target: 40, endsIn: "2d 6h", deposit: 500 },
+                  { seller: "TechMart BD", badge: "Recommended", badgeClass: "bg-blue-100 text-blue-700 border-blue-200", groupPrice: 45000, originalPrice: 47999, joined: 7, target: 30, endsIn: "5d 12h", deposit: 300 },
+                ].map((deal, i) => {
+                  const progress = Math.round((deal.joined / deal.target) * 100);
+                  const needed = deal.target - deal.joined;
+                  return (
+                    <div key={i} className="border border-slate-200 rounded-xl p-4 flex flex-col gap-3 hover:border-primary/30 hover:shadow-sm transition-all">
+                      {/* Seller */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-lg bg-blue-900 flex items-center justify-center shrink-0">
+                            <svg viewBox="0 0 40 40" className="w-6 h-6" fill="none">
+                              <circle cx="20" cy="20" r="20" fill="#1e3a5f"/>
+                              <path d="M14 14 C14 14 16 10 20 10 C24 10 26 14 26 14 L28 28 L20 24 L12 28 Z" fill="#e8b84b"/>
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="text-[11px] font-bold text-slate-800 leading-tight">{deal.seller}</p>
+                            <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${deal.badgeClass}`}>{deal.badge}</span>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[10px] text-slate-400 flex items-center gap-0.5 justify-end"><Clock className="w-2.5 h-2.5" /> {deal.endsIn}</p>
+                        </div>
+                      </div>
+
+                      {/* Price */}
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-heading font-black text-xl text-primary">৳{deal.groupPrice.toLocaleString()}</span>
+                        <span className="text-xs text-slate-400 line-through">৳{deal.originalPrice.toLocaleString()}</span>
+                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
+                          Save ৳{(deal.originalPrice - deal.groupPrice).toLocaleString()}
+                        </span>
+                      </div>
+
+                      {/* Progress */}
+                      <div>
+                        <div className="flex justify-between text-[10px] font-bold mb-1.5">
+                          <span className="text-slate-600">{deal.joined} joined</span>
+                          <span className="text-primary">{needed} more needed</span>
+                        </div>
+                        <Progress value={progress} className="h-1.5 bg-slate-100 [&>div]:bg-gradient-to-r [&>div]:from-primary [&>div]:to-indigo-500" />
+                      </div>
+
+                      {/* Join button */}
+                      <Button className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-9 text-xs mt-auto">
+                        Join Deal (Deposit ৳{deal.deposit})
+                      </Button>
                     </div>
                   );
                 })}
