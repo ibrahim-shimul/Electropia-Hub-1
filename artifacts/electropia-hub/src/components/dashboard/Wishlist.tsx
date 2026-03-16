@@ -1,19 +1,20 @@
-import { ProductCard } from "@/components/ui/ProductCard";
-import { MOCK_PRODUCTS } from "@/lib/mock-data";
+import { Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 
 export default function Wishlist() {
   return (
-    <div className="p-6 md:p-8 h-full flex flex-col">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="font-heading font-extrabold text-2xl text-slate-900">My Wishlist</h2>
-        <span className="text-sm font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">{MOCK_PRODUCTS.length} Items</span>
+    <div className="p-6 md:p-8 flex flex-col items-center justify-center min-h-[400px] text-center">
+      <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mb-6">
+        <Heart className="w-10 h-10 text-slate-300" strokeWidth={1.5} />
       </div>
-
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 flex-1">
-        {MOCK_PRODUCTS.slice(0, 5).map(product => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      <h2 className="font-heading font-extrabold text-2xl text-slate-800 mb-2">Your wishlist is empty</h2>
+      <p className="text-slate-500 text-sm mb-8 max-w-xs">Save items you like to buy them later.</p>
+      <Link href="/">
+        <Button className="bg-[#6c2bd9] hover:bg-[#5821b0] font-bold px-8 h-11">
+          Start Adding Items
+        </Button>
+      </Link>
     </div>
   );
 }

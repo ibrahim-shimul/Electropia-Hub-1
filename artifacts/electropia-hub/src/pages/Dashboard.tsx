@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
-import { User, Package, Wallet, Heart, Bell, Users, LogOut, Settings } from "lucide-react";
-import Profile from "@/components/dashboard/Profile";
+import { LayoutDashboard, Package, Heart, MapPin, Wallet, Bell, UserCog, LogOut } from "lucide-react";
+import Overview from "@/components/dashboard/Overview";
 import Orders from "@/components/dashboard/Orders";
 import WalletTab from "@/components/dashboard/Wallet";
 import Wishlist from "@/components/dashboard/Wishlist";
+import Addresses from "@/components/dashboard/Addresses";
 import Notifications from "@/components/dashboard/Notifications";
-import MyGroupDeals from "@/components/dashboard/MyGroupDeals";
+import AccountSettings from "@/components/dashboard/AccountSettings";
 import { useRoute, useLocation } from "wouter";
 
 export default function Dashboard() {
   const [, params] = useRoute("/dashboard/:tab?");
   const [, setLocation] = useLocation();
-  const urlTab = params?.tab ? decodeURIComponent(params.tab) : "profile";
+  const urlTab = params?.tab ? decodeURIComponent(params.tab) : "overview";
 
   const [activeTab, setActiveTab] = useState(urlTab);
 
@@ -20,13 +21,13 @@ export default function Dashboard() {
   }, [urlTab]);
 
   const menuItems = [
-    { id: "profile", label: "Profile", icon: User },
+    { id: "overview", label: "Overview", icon: LayoutDashboard },
     { id: "orders", label: "Orders", icon: Package },
-    { id: "wallet", label: "Wallet", icon: Wallet },
-    { id: "group_deals", label: "My Group Deals", icon: Users },
     { id: "wishlist", label: "Wishlist", icon: Heart },
+    { id: "addresses", label: "Addresses", icon: MapPin },
+    { id: "wallet", label: "Wallet", icon: Wallet },
     { id: "notifications", label: "Notifications", icon: Bell },
-    { id: "settings", label: "Settings", icon: Settings },
+    { id: "account", label: "Account", icon: UserCog },
   ];
 
   const handleTabClick = (tabId: string) => {
@@ -34,67 +35,47 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-6 pb-12 mt-6">
+    <div className="flex flex-col md:flex-row gap-0 pb-12 mt-0 -mx-4 sm:-mx-6 lg:-mx-8">
       {/* Sidebar */}
-      <aside className="w-full md:w-64 shrink-0">
-        <div className="bg-white rounded-xl border border-slate-200 p-4 sticky top-24">
-          <div className="flex items-center gap-4 mb-6 pb-6 border-b border-slate-100">
-            <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center font-heading font-bold text-xl">
-              JD
-            </div>
-            <div>
-              <h3 className="font-bold text-slate-900">John Doe</h3>
-              <p className="text-xs text-slate-500">+880 1711-000000</p>
-            </div>
-          </div>
-          
-          <nav className="space-y-1">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => handleTabClick(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold transition-all ${
-                    isActive 
-                      ? "bg-primary text-white shadow-md shadow-primary/20" 
-                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-                  }`}
-                >
-                  <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-slate-400"}`} />
-                  {item.label}
-                  {item.id === "group_deals" && <span className="ml-auto bg-purple-100 text-purple-700 text-[10px] px-1.5 py-0.5 rounded-full font-bold">1 Active</span>}
-                </button>
-              );
-            })}
-          </nav>
+      <aside className="w-full md:w-52 shrink-0 bg-white border-r border-slate-200 md:min-h-[calc(100vh-120px)]">
+        <nav className="py-4">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleTabClick(item.id)}
+                className={`w-full flex items-center gap-3 px-5 py-3 text-sm font-semibold transition-all border-l-[3px] ${
+                  isActive
+                    ? "border-[#6c2bd9] bg-[#6c2bd9]/5 text-[#6c2bd9]"
+                    : "border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                }`}
+              >
+                <Icon className={`w-4 h-4 ${isActive ? "text-[#6c2bd9]" : "text-slate-400"}`} />
+                {item.label}
+              </button>
+            );
+          })}
 
-          <div className="mt-8 pt-6 border-t border-slate-100">
-            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-colors">
+          <div className="mt-4 pt-4 border-t border-slate-100 mx-4">
+            <button className="w-full flex items-center gap-3 px-1 py-3 text-sm font-semibold text-slate-500 hover:text-rose-500 transition-colors rounded-lg">
               <LogOut className="w-4 h-4" />
               Logout
             </button>
           </div>
-        </div>
+        </nav>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden min-h-[600px]">
-        {activeTab === "profile" && <Profile />}
+      <main className="flex-1 bg-[#F8F9FA] min-h-[calc(100vh-120px)]">
+        {activeTab === "overview" && <Overview onNavigate={handleTabClick} />}
         {activeTab === "orders" && <Orders />}
-        {activeTab === "group_deals" && <MyGroupDeals />}
-        {activeTab === "wallet" && <WalletTab />}
         {activeTab === "wishlist" && <Wishlist />}
+        {activeTab === "addresses" && <Addresses />}
+        {activeTab === "wallet" && <WalletTab />}
         {activeTab === "notifications" && <Notifications />}
-        {activeTab === "settings" && (
-          <div className="p-6 md:p-8">
-            <h2 className="font-heading font-extrabold text-2xl text-slate-900 mb-6">Account Settings</h2>
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 text-center text-slate-500">
-              Settings options will be available here soon.
-            </div>
-          </div>
-        )}
+        {activeTab === "account" && <AccountSettings />}
       </main>
     </div>
   );
