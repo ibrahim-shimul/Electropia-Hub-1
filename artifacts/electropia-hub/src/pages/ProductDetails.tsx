@@ -313,6 +313,8 @@ export default function ProductDetails() {
             badgeClass: "bg-emerald-100 text-emerald-700 border-emerald-200",
             days: "2-3 days", outDays: "4-10 days",
             sold: 13, stock: 17,
+            rating: "4.8",
+            shopTags: ["Flagship Store", "Certified Store", "Top Rated"],
             facilities: [
               { label: "Free Shipping", icon: Truck, color: "text-blue-600 bg-blue-50 border-blue-200" },
               { label: "Free Installation", icon: Wrench, color: "text-purple-600 bg-purple-50 border-purple-200" },
@@ -327,6 +329,8 @@ export default function ProductDetails() {
             badgeClass: "bg-amber-100 text-amber-700 border-amber-200",
             days: "2-5 days", outDays: "4-10 days",
             sold: 13, stock: 17,
+            rating: "4.9",
+            shopTags: ["Official Store", "Certified Store"],
             facilities: [
               { label: "Free Shipping", icon: Truck, color: "text-blue-600 bg-blue-50 border-blue-200" },
               { label: "Brand Warranty", icon: Award, color: "text-emerald-600 bg-emerald-50 border-emerald-200" },
@@ -340,6 +344,8 @@ export default function ProductDetails() {
             badgeClass: "bg-blue-100 text-blue-700 border-blue-200",
             days: "2-3 days", outDays: "4-10 days",
             sold: 13, stock: 17,
+            rating: "4.7",
+            shopTags: ["Authorized Reseller"],
             facilities: [
               { label: "Free Shipping", icon: Truck, color: "text-blue-600 bg-blue-50 border-blue-200" },
               { label: "7 Days Return", icon: RotateCcw, color: "text-amber-600 bg-amber-50 border-amber-200" },
@@ -352,6 +358,8 @@ export default function ProductDetails() {
             badgeClass: "bg-slate-100 text-slate-600 border-slate-200",
             days: "3-5 days", outDays: "5-12 days",
             sold: 5, stock: 24,
+            rating: null,
+            shopTags: ["New Store"],
             facilities: [
               { label: "Free Shipping", icon: Truck, color: "text-blue-600 bg-blue-50 border-blue-200" },
               { label: "Brand Warranty", icon: Award, color: "text-emerald-600 bg-emerald-50 border-emerald-200" },
@@ -388,12 +396,22 @@ export default function ProductDetails() {
                             </svg>
                           </div>
                           <div className="min-w-0">
-                            <h4 className="font-bold text-slate-900 text-xs flex items-center gap-0.5 leading-tight">
+                            <h4 className="font-bold text-slate-900 text-xs flex items-center gap-0.5 leading-tight flex-wrap">
                               {seller.name}
                               <CheckCircle2 className="w-3 h-3 text-blue-500 shrink-0" />
+                              {seller.rating ? (
+                                <span className="flex items-center gap-0.5 text-[10px] font-bold text-amber-500">
+                                  <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
+                                  {seller.rating}
+                                </span>
+                              ) : (
+                                <span className="text-[10px] font-normal text-slate-400 flex items-center gap-0.5">
+                                  <Star className="w-2.5 h-2.5" /> No ratings
+                                </span>
+                              )}
                             </h4>
-                            <p className="text-[10px] text-slate-400 flex items-center gap-0.5 mt-0.5">
-                              <Star className="w-2.5 h-2.5" /> No ratings yet
+                            <p className="text-[10px] text-slate-500 flex items-center gap-0.5 mt-0.5">
+                              <MapPin className="w-2.5 h-2.5" /> {product.seller.location}
                             </p>
                           </div>
                         </div>
@@ -406,10 +424,14 @@ export default function ProductDetails() {
                         )}
                       </div>
 
-                      {/* Badge + Location */}
-                      <div className="flex flex-col gap-1">
-                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border w-fit ${seller.badgeClass}`}>{seller.badge}</span>
-                        <span className="text-[10px] text-slate-500 flex items-center gap-0.5"><MapPin className="w-2.5 h-2.5" /> {product.seller.location}</span>
+                      {/* Shop type tags row */}
+                      <div className="flex flex-wrap gap-1">
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${seller.badgeClass}`}>{seller.badge}</span>
+                        {seller.shopTags.map((tag, ti) => (
+                          <span key={ti} className="text-[10px] font-semibold px-1.5 py-0.5 rounded border bg-slate-50 text-slate-600 border-slate-200">
+                            {tag}
+                          </span>
+                        ))}
                       </div>
 
                       {/* Delivery */}
