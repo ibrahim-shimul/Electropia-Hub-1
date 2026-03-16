@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Truck } from "lucide-react";
+import { ChevronDown, Truck, ChevronRight } from "lucide-react";
 import { Link } from "wouter";
 
 const MOCK_ORDERS = [
@@ -91,7 +91,7 @@ export default function Orders() {
       </div>
 
       {/* Orders list */}
-      <div className="space-y-4">
+      <div className="space-y-3">
         {filtered.length === 0 ? (
           <div className="text-center py-16 text-slate-400">
             <p className="font-semibold text-lg">No orders found</p>
@@ -99,53 +99,53 @@ export default function Orders() {
         ) : (
           filtered.map(order => (
             <div key={order.id} className="bg-white border border-slate-200 rounded-xl p-5 hover:shadow-sm transition-shadow">
-              <div className="flex flex-wrap items-start gap-4">
-                {/* Images */}
-                <div className="flex gap-2 shrink-0">
-                  {order.images.map((img, i) => (
-                    <div key={i} className="w-16 h-16 bg-slate-50 border border-slate-100 rounded-lg overflow-hidden">
-                      <img src={img} alt="" className="w-full h-full object-contain p-1" />
-                    </div>
-                  ))}
-                </div>
+              {/* Top: images */}
+              <div className="flex gap-2 mb-4">
+                {order.images.map((img, i) => (
+                  <div key={i} className="w-16 h-16 bg-slate-100 rounded-xl overflow-hidden shrink-0">
+                    <img src={img} alt="" className="w-full h-full object-contain p-1.5" />
+                  </div>
+                ))}
+              </div>
 
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1.5">
+              {/* Middle: order info + date */}
+              <div className="flex items-start justify-between gap-4 mb-1">
+                <div>
+                  <div className="flex items-center gap-2">
                     <span className="font-bold text-slate-900 text-sm">Order #{order.id}</span>
-                    <Badge variant="outline" className={`text-[11px] font-bold px-2 py-0 ${getStatusBadgeClass(order.status)}`}>
+                    <Badge variant="outline" className={`text-[11px] font-bold px-2 py-0 leading-5 ${getStatusBadgeClass(order.status)}`}>
                       {order.status}
                     </Badge>
                   </div>
-                  <p className="text-xs text-slate-500 mb-0.5">{order.itemCount} {order.itemCount === 1 ? "item" : "items"} · Placed {order.date}</p>
-                  <p className="font-heading font-extrabold text-lg text-slate-900">৳{order.total.toLocaleString()}</p>
+                  <p className="text-xs text-slate-500 mt-0.5">{order.itemCount} {order.itemCount === 1 ? "item" : "items"} · Placed {order.date}</p>
                 </div>
+                <span className="text-xs text-slate-400 font-medium whitespace-nowrap shrink-0">{order.date}</span>
+              </div>
 
-                {/* Date + Actions */}
-                <div className="flex flex-col items-end gap-2 shrink-0">
-                  <span className="text-xs text-slate-400 font-medium">{order.date}</span>
-                  <div className="flex items-center gap-2">
-                    {(order.status === "Shipped" || order.status === "Delivered") && (
-                      <Button variant="outline" size="sm" className="h-8 text-xs font-bold border-slate-200 text-slate-700 hover:bg-slate-50 gap-1.5">
-                        <Truck className="w-3 h-3" /> Track
-                      </Button>
-                    )}
-                    {order.status === "Delivered" && (
-                      <Button variant="outline" size="sm" className="h-8 text-xs font-bold border-slate-200 text-slate-700 hover:bg-slate-50">
-                        Return
-                      </Button>
-                    )}
-                    {order.status === "Pending" && (
-                      <Button variant="outline" size="sm" className="h-8 text-xs font-bold border-rose-200 text-rose-600 hover:bg-rose-50">
-                        Cancel
-                      </Button>
-                    )}
-                    <Link href={`/order/${order.id}`}>
-                      <Button size="sm" className="h-8 text-xs font-bold bg-[#6c2bd9] hover:bg-[#5821b0] gap-1">
-                        Details <span className="text-purple-200">›</span>
-                      </Button>
-                    </Link>
-                  </div>
+              {/* Bottom: price + actions */}
+              <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
+                <span className="font-heading font-extrabold text-lg text-slate-900">৳{order.total.toLocaleString()}</span>
+                <div className="flex items-center gap-2">
+                  {(order.status === "Shipped" || order.status === "Delivered") && (
+                    <Button variant="outline" size="sm" className="h-8 text-xs font-bold border-slate-200 text-slate-700 hover:bg-slate-50 gap-1.5 rounded-full">
+                      <Truck className="w-3 h-3" /> Track
+                    </Button>
+                  )}
+                  {order.status === "Delivered" && (
+                    <Button variant="outline" size="sm" className="h-8 text-xs font-bold border-slate-200 text-slate-700 hover:bg-slate-50 rounded-full">
+                      Return
+                    </Button>
+                  )}
+                  {order.status === "Pending" && (
+                    <Button variant="outline" size="sm" className="h-8 text-xs font-bold border-rose-200 text-rose-600 hover:bg-rose-50 rounded-full">
+                      Cancel
+                    </Button>
+                  )}
+                  <Link href={`/order/${order.id}`}>
+                    <Button size="sm" className="h-8 text-xs font-bold bg-[#6c2bd9] hover:bg-[#5821b0] gap-1 rounded-full">
+                      Details <ChevronRight className="w-3.5 h-3.5" />
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>

@@ -12,7 +12,7 @@ export default function AccountSettings() {
   const completion = 60;
 
   return (
-    <div className="p-6 md:p-8 max-w-3xl space-y-6">
+    <div className="p-6 md:p-8 space-y-6">
       <div>
         <h1 className="font-heading font-extrabold text-2xl text-slate-900 mb-1">Account Settings</h1>
         <p className="text-sm text-slate-500">Manage your profile, verification, and account settings.</p>

@@ -37,24 +37,25 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col md:flex-row gap-0 pb-12 mt-0 -mx-4 sm:-mx-6 lg:-mx-8">
       {/* Sidebar */}
-      <aside className="w-full md:w-52 shrink-0 bg-white border-r border-slate-200 md:min-h-[calc(100vh-120px)]">
+      <aside className="w-full md:w-56 shrink-0 border-r border-slate-200 md:min-h-[calc(100vh-120px)]">
         <nav className="py-4">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
             return (
-              <button
-                key={item.id}
-                onClick={() => handleTabClick(item.id)}
-                className={`w-full flex items-center gap-3 px-5 py-3 text-sm font-semibold transition-all border-l-[3px] ${
-                  isActive
-                    ? "border-[#6c2bd9] bg-[#6c2bd9]/5 text-[#6c2bd9]"
-                    : "border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-                }`}
-              >
-                <Icon className={`w-4 h-4 ${isActive ? "text-[#6c2bd9]" : "text-slate-400"}`} />
-                {item.label}
-              </button>
+              <div key={item.id} className="px-3 my-0.5">
+                <button
+                  onClick={() => handleTabClick(item.id)}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold transition-all rounded-lg ${
+                    isActive
+                      ? "bg-[#6c2bd9] text-white shadow-sm"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-slate-400"}`} />
+                  {item.label}
+                </button>
+              </div>
             );
           })}
 

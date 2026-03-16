@@ -15,7 +15,7 @@ const QUICK_LINKS = [
 
 export default function Overview({ onNavigate }: OverviewProps) {
   return (
-    <div className="p-6 md:p-8 max-w-4xl">
+    <div className="p-6 md:p-8">
       {/* Welcome */}
       <div className="mb-8">
         <h1 className="font-heading font-extrabold text-2xl text-slate-900 mb-1">Welcome back</h1>
