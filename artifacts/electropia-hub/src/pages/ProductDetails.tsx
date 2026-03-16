@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Star, Heart, Share2, ShieldCheck, MapPin, ChevronRight, CheckCircle2, Users, Clock, AlertCircle } from "lucide-react";
+import { Star, Heart, Share2, ShieldCheck, MapPin, ChevronRight, CheckCircle2, Users, Clock, AlertCircle, Truck, Wrench, RotateCcw, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,7 +11,8 @@ export default function ProductDetails() {
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const [hasJoinedGroup, setHasJoinedGroup] = useState(false);
-  const [groupCurrent, setGroupCurrent] = useState(32); // Initial mock data state
+  const [groupCurrent, setGroupCurrent] = useState(32);
+  const [selectedSeller, setSelectedSeller] = useState(0);
 
   const product = {
     name: "SAFE E18KINV Intelligent Inverter Split Air Conditioner - 1.5 Ton",
@@ -304,127 +305,279 @@ export default function ProductDetails() {
       </div>
 
       {/* Available Sellers Section */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6">
-        <h2 className="font-heading font-bold text-lg text-slate-900 mb-5">Available Sellers</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[
-            { badge: "Verified Seller", badgeClass: "bg-emerald-100 text-emerald-700 border-emerald-200", days: "2-3 days", outDays: "4-10 days" },
-            { badge: "Brand Official", badgeClass: "bg-amber-100 text-amber-700 border-amber-200", days: "2-5 days", outDays: "4-10 days" },
-            { badge: "Recommended", badgeClass: "bg-blue-100 text-blue-700 border-blue-200", days: "2-3 days", outDays: "4-10 days" },
-          ].map((seller, idx) => (
-            <div key={idx} className="border border-slate-200 rounded-xl p-4 flex flex-col gap-3 hover:border-primary/30 hover:shadow-md transition-all">
-              {/* Seller header */}
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-lg bg-blue-900 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
-                    <svg viewBox="0 0 40 40" className="w-9 h-9" fill="none">
-                      <circle cx="20" cy="20" r="20" fill="#1e3a5f"/>
-                      <path d="M14 14 C14 14 16 10 20 10 C24 10 26 14 26 14 L28 28 L20 24 L12 28 Z" fill="#e8b84b"/>
-                      <path d="M17 18 C17 16 18.5 15 20 15 C21.5 15 23 16 23 18 C23 20 21.5 22 20 22 C18.5 22 17 20 17 18Z" fill="white"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900 text-sm flex items-center gap-1 leading-tight">
-                      {product.seller.name}
-                      <CheckCircle2 className="w-3.5 h-3.5 text-blue-500" />
-                    </h4>
-                    <p className="text-[11px] text-slate-400">No ratings found yet!</p>
-                  </div>
-                </div>
-                <div className="w-8 h-8 shrink-0">
-                  <svg viewBox="0 0 32 32" className="w-8 h-8">
-                    <circle cx="16" cy="16" r="16" fill="#fef3c7"/>
-                    <text x="16" y="21" textAnchor="middle" fontSize="14" fill="#d97706">🏅</text>
-                  </svg>
-                </div>
-              </div>
+      {(() => {
+        const SELLERS = [
+          {
+            name: "Walton Official Store",
+            badge: "Verified Seller",
+            badgeClass: "bg-emerald-100 text-emerald-700 border-emerald-200",
+            days: "2-3 days", outDays: "4-10 days",
+            sold: 13, stock: 17,
+            facilities: [
+              { label: "Free Shipping", icon: Truck, color: "text-blue-600 bg-blue-50 border-blue-200" },
+              { label: "Free Installation", icon: Wrench, color: "text-purple-600 bg-purple-50 border-purple-200" },
+              { label: "7 Days Return", icon: RotateCcw, color: "text-amber-600 bg-amber-50 border-amber-200" },
+              { label: "Brand Warranty", icon: Award, color: "text-emerald-600 bg-emerald-50 border-emerald-200" },
+            ],
+            shopInfo: { founded: "2015", rating: "4.8", totalSales: "12,340", responseTime: "< 1 hour", returnPolicy: "7-day hassle-free returns accepted. Product must be unused and in original packaging." },
+          },
+          {
+            name: "Walton Official Store",
+            badge: "Brand Official",
+            badgeClass: "bg-amber-100 text-amber-700 border-amber-200",
+            days: "2-5 days", outDays: "4-10 days",
+            sold: 13, stock: 17,
+            facilities: [
+              { label: "Free Shipping", icon: Truck, color: "text-blue-600 bg-blue-50 border-blue-200" },
+              { label: "Brand Warranty", icon: Award, color: "text-emerald-600 bg-emerald-50 border-emerald-200" },
+              { label: "Official Support", icon: ShieldCheck, color: "text-indigo-600 bg-indigo-50 border-indigo-200" },
+            ],
+            shopInfo: { founded: "2018", rating: "4.9", totalSales: "8,210", responseTime: "< 30 min", returnPolicy: "Brand-direct exchange within 10 days. Contact official support for claims." },
+          },
+          {
+            name: "Walton Official Store",
+            badge: "Recommended",
+            badgeClass: "bg-blue-100 text-blue-700 border-blue-200",
+            days: "2-3 days", outDays: "4-10 days",
+            sold: 13, stock: 17,
+            facilities: [
+              { label: "Free Shipping", icon: Truck, color: "text-blue-600 bg-blue-50 border-blue-200" },
+              { label: "7 Days Return", icon: RotateCcw, color: "text-amber-600 bg-amber-50 border-amber-200" },
+            ],
+            shopInfo: { founded: "2020", rating: "4.7", totalSales: "3,580", responseTime: "< 2 hours", returnPolicy: "7-day return policy. Items must be in original condition." },
+          },
+          {
+            name: "Walton Official Store",
+            badge: "New Seller",
+            badgeClass: "bg-slate-100 text-slate-600 border-slate-200",
+            days: "3-5 days", outDays: "5-12 days",
+            sold: 5, stock: 24,
+            facilities: [
+              { label: "Free Shipping", icon: Truck, color: "text-blue-600 bg-blue-50 border-blue-200" },
+              { label: "Brand Warranty", icon: Award, color: "text-emerald-600 bg-emerald-50 border-emerald-200" },
+            ],
+            shopInfo: { founded: "2023", rating: "N/A", totalSales: "120", responseTime: "< 4 hours", returnPolicy: "Return within 5 days of delivery. Contact seller directly." },
+          },
+        ];
+        const active = SELLERS[selectedSeller];
+        return (
+          <>
+            <div className="bg-white border border-slate-200 rounded-xl p-6">
+              <h2 className="font-heading font-bold text-lg text-slate-900 mb-5">Available Sellers</h2>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                {SELLERS.map((seller, idx) => {
+                  const isSelected = selectedSeller === idx;
+                  return (
+                    <div
+                      key={idx}
+                      onClick={() => setSelectedSeller(idx)}
+                      className={`border rounded-xl p-3 flex flex-col gap-2.5 cursor-pointer transition-all ${
+                        isSelected
+                          ? "border-primary bg-primary/5 shadow-md shadow-primary/10 ring-1 ring-primary/20"
+                          : "border-slate-200 hover:border-primary/40 hover:shadow-sm"
+                      }`}
+                    >
+                      {/* Seller header */}
+                      <div className="flex items-start justify-between gap-1.5">
+                        <div className="flex items-center gap-2">
+                          <div className="w-10 h-10 rounded-lg bg-blue-900 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
+                            <svg viewBox="0 0 40 40" className="w-8 h-8" fill="none">
+                              <circle cx="20" cy="20" r="20" fill="#1e3a5f"/>
+                              <path d="M14 14 C14 14 16 10 20 10 C24 10 26 14 26 14 L28 28 L20 24 L12 28 Z" fill="#e8b84b"/>
+                              <path d="M17 18 C17 16 18.5 15 20 15 C21.5 15 23 16 23 18 C23 20 21.5 22 20 22 C18.5 22 17 20 17 18Z" fill="white"/>
+                            </svg>
+                          </div>
+                          <div className="min-w-0">
+                            <h4 className="font-bold text-slate-900 text-xs flex items-center gap-0.5 leading-tight">
+                              {seller.name}
+                              <CheckCircle2 className="w-3 h-3 text-blue-500 shrink-0" />
+                            </h4>
+                            <p className="text-[10px] text-slate-400 flex items-center gap-0.5 mt-0.5">
+                              <Star className="w-2.5 h-2.5" /> No ratings yet
+                            </p>
+                          </div>
+                        </div>
+                        {isSelected && (
+                          <div className="w-4 h-4 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5">
+                            <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
 
-              {/* Badge + Location */}
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${seller.badgeClass}`}>{seller.badge}</span>
-                <span className="text-[11px] text-slate-500 flex items-center gap-0.5"><MapPin className="w-3 h-3" /> {product.seller.location}</span>
-              </div>
+                      {/* Badge + Location */}
+                      <div className="flex flex-col gap-1">
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border w-fit ${seller.badgeClass}`}>{seller.badge}</span>
+                        <span className="text-[10px] text-slate-500 flex items-center gap-0.5"><MapPin className="w-2.5 h-2.5" /> {product.seller.location}</span>
+                      </div>
 
-              {/* Delivery */}
-              <div className="grid grid-cols-2 gap-2 text-[11px]">
-                <div className="bg-slate-50 rounded-lg p-2.5 border border-slate-100">
-                  <p className="text-slate-500 mb-0.5">Inside Dhaka</p>
-                  <p className="font-bold text-slate-800">{product.seller.insideDhaka}</p>
-                  <p className="text-slate-400 flex items-center gap-1 mt-0.5">
-                    <Clock className="w-2.5 h-2.5" /> {seller.days}
-                  </p>
-                </div>
-                <div className="bg-slate-50 rounded-lg p-2.5 border border-slate-100">
-                  <p className="text-slate-500 mb-0.5">Outside Dhaka</p>
-                  <p className="font-bold text-slate-800">{product.seller.outsideDhaka}</p>
-                  <p className="text-slate-400 flex items-center gap-1 mt-0.5">
-                    <Clock className="w-2.5 h-2.5" /> {seller.outDays}
-                  </p>
-                </div>
-              </div>
+                      {/* Delivery */}
+                      <div className="grid grid-cols-2 gap-1.5 text-[10px]">
+                        <div className="bg-slate-50 rounded-md p-2 border border-slate-100">
+                          <p className="text-slate-500 mb-0.5">Inside Dhaka</p>
+                          <p className="font-bold text-slate-800 text-[11px]">{product.seller.insideDhaka}</p>
+                          <p className="text-slate-400 flex items-center gap-0.5 mt-0.5">
+                            <Clock className="w-2 h-2" /> {seller.days}
+                          </p>
+                        </div>
+                        <div className="bg-slate-50 rounded-md p-2 border border-slate-100">
+                          <p className="text-slate-500 mb-0.5">Outside Dhaka</p>
+                          <p className="font-bold text-slate-800 text-[11px]">{product.seller.outsideDhaka}</p>
+                          <p className="text-slate-400 flex items-center gap-0.5 mt-0.5">
+                            <Clock className="w-2 h-2" /> {seller.outDays}
+                          </p>
+                        </div>
+                      </div>
 
-              {/* Stock bar */}
-              <div>
-                <div className="flex justify-between text-[11px] font-bold mb-1">
-                  <span className="text-slate-600">Sold: {product.seller.sold}</span>
-                  <span className="text-emerald-600">In Stock: {product.seller.stock}</span>
-                </div>
-                <Progress value={(product.seller.sold / (product.seller.sold + product.seller.stock)) * 100} className="h-1.5 bg-slate-100 [&>div]:bg-primary" />
-              </div>
+                      {/* Stock count badges */}
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-bold px-2 py-1 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
+                          Sold: {seller.sold}
+                        </span>
+                        <span className="text-[10px] font-bold px-2 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          In Stock ({seller.stock})
+                        </span>
+                      </div>
 
-              {/* Price */}
-              <div className="flex items-center gap-2 mt-1">
-                <span className="text-[13px] text-slate-400 line-through font-medium">৳{product.originalPrice.toLocaleString()}</span>
-                <span className="font-heading font-black text-xl text-primary">৳{product.price.toLocaleString()}</span>
-              </div>
+                      {/* Facilities tags */}
+                      <div className="flex flex-wrap gap-1">
+                        {seller.facilities.map((f, fi) => {
+                          const FIcon = f.icon;
+                          return (
+                            <span key={fi} className={`flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded border ${f.color}`}>
+                              <FIcon className="w-2 h-2" /> {f.label}
+                            </span>
+                          );
+                        })}
+                      </div>
 
-              {/* Qty + Buttons */}
-              <div className="flex items-center gap-2 mt-auto">
-                <div className="flex items-center border border-slate-200 rounded-lg overflow-hidden h-9 shrink-0">
-                  <button className="w-8 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 font-bold text-lg leading-none">-</button>
-                  <div className="w-8 h-full flex items-center justify-center font-bold text-slate-900 border-x border-slate-200 text-sm">1</div>
-                  <button className="w-8 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 font-bold text-lg leading-none">+</button>
-                </div>
-                <Button className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold h-9 text-xs px-3">
-                  ADD TO CART
-                </Button>
-                <Button className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold h-9 text-xs px-3">
-                  BUY NOW
-                </Button>
+                      {/* Price */}
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[11px] text-slate-400 line-through">৳{product.originalPrice.toLocaleString()}</span>
+                        <span className="font-heading font-black text-base text-primary">৳{product.price.toLocaleString()}</span>
+                      </div>
+
+                      {/* Qty + Buttons */}
+                      <div className="flex items-center gap-1.5 mt-auto">
+                        <div className="flex items-center border border-slate-200 rounded-md overflow-hidden h-8 shrink-0">
+                          <button className="w-7 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 font-bold text-base leading-none">-</button>
+                          <div className="w-7 h-full flex items-center justify-center font-bold text-slate-900 border-x border-slate-200 text-xs">1</div>
+                          <button className="w-7 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 font-bold text-base leading-none">+</button>
+                        </div>
+                        <Button className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold h-8 text-[10px] px-2">
+                          ADD TO CART
+                        </Button>
+                        <Button className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold h-8 text-[10px] px-2">
+                          BUY NOW
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Tabs Section */}
-      <div className="bg-white border border-slate-200 rounded-xl mt-4 overflow-hidden">
-        <Tabs defaultValue="specs" className="w-full">
-          <TabsList className="w-full justify-start rounded-none border-b border-slate-200 bg-slate-50 h-auto p-0">
-            <TabsTrigger value="desc" className="rounded-none py-4 px-8 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:shadow-none font-bold text-slate-600 data-[state=active]:text-primary">Description</TabsTrigger>
-            <TabsTrigger value="specs" className="rounded-none py-4 px-8 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:shadow-none font-bold text-slate-600 data-[state=active]:text-primary">Specifications</TabsTrigger>
-            <TabsTrigger value="qa" className="rounded-none py-4 px-8 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:shadow-none font-bold text-slate-600 data-[state=active]:text-primary">Questions & Answers</TabsTrigger>
-          </TabsList>
-          <div className="p-8">
-            <TabsContent value="desc" className="text-slate-600 text-sm leading-relaxed mt-0">
-              This intelligent inverter split air conditioner from SAFE provides optimal cooling while ensuring energy efficiency. Designed for modern homes, it features advanced air purification filters and a whisper-quiet operation mode.
-            </TabsContent>
-            <TabsContent value="specs" className="mt-0">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
-                {Object.entries(product.specs).map(([key, value]) => (
-                  <div key={key} className="flex justify-between py-3 border-b border-slate-100 last:border-0 md:last:border-b md:[&:nth-last-child(2)]:border-0">
-                    <span className="text-sm font-semibold text-slate-500">{key}</span>
-                    <span className="text-sm font-bold text-slate-900 text-right">{value}</span>
-                  </div>
-                ))}
-              </div>
-            </TabsContent>
-            <TabsContent value="qa" className="text-slate-600 text-sm mt-0">
-              No questions asked yet. Be the first to ask!
-            </TabsContent>
-          </div>
-        </Tabs>
-      </div>
+            {/* Tabs Section */}
+            <div className="bg-white border border-slate-200 rounded-xl mt-4 overflow-hidden">
+              <Tabs defaultValue="specs" className="w-full">
+                <TabsList className="w-full justify-start rounded-none border-b border-slate-200 bg-slate-50 h-auto p-0">
+                  <TabsTrigger value="desc" className="rounded-none py-4 px-8 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:shadow-none font-bold text-slate-600 data-[state=active]:text-primary">Description</TabsTrigger>
+                  <TabsTrigger value="specs" className="rounded-none py-4 px-8 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:shadow-none font-bold text-slate-600 data-[state=active]:text-primary">Specifications</TabsTrigger>
+                  <TabsTrigger value="seller" className="rounded-none py-4 px-8 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:shadow-none font-bold text-slate-600 data-[state=active]:text-primary">
+                    Seller Info
+                    <span className="ml-2 text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded font-bold">{active.badge}</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="qa" className="rounded-none py-4 px-8 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:shadow-none font-bold text-slate-600 data-[state=active]:text-primary">Questions & Answers</TabsTrigger>
+                </TabsList>
+                <div className="p-8">
+                  <TabsContent value="desc" className="text-slate-600 text-sm leading-relaxed mt-0">
+                    <p className="mb-4">This intelligent inverter split air conditioner from SAFE provides optimal cooling while ensuring energy efficiency. Designed for modern homes, it features advanced air purification filters and a whisper-quiet operation mode.</p>
+                    <div className="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Sold by: {active.name}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {active.facilities.map((f, i) => {
+                          const FIcon = f.icon;
+                          return (
+                            <span key={i} className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full border ${f.color}`}>
+                              <FIcon className="w-3 h-3" /> {f.label}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="specs" className="mt-0">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
+                      {Object.entries(product.specs).map(([key, value]) => (
+                        <div key={key} className="flex justify-between py-3 border-b border-slate-100 last:border-0 md:last:border-b md:[&:nth-last-child(2)]:border-0">
+                          <span className="text-sm font-semibold text-slate-500">{key}</span>
+                          <span className="text-sm font-bold text-slate-900 text-right">{value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="seller" className="mt-0">
+                    <div className="flex items-center gap-4 mb-6 pb-6 border-b border-slate-100">
+                      <div className="w-14 h-14 rounded-xl bg-blue-900 flex items-center justify-center shrink-0 shadow">
+                        <svg viewBox="0 0 40 40" className="w-10 h-10" fill="none">
+                          <circle cx="20" cy="20" r="20" fill="#1e3a5f"/>
+                          <path d="M14 14 C14 14 16 10 20 10 C24 10 26 14 26 14 L28 28 L20 24 L12 28 Z" fill="#e8b84b"/>
+                          <path d="M17 18 C17 16 18.5 15 20 15 C21.5 15 23 16 23 18 C23 20 21.5 22 20 22 C18.5 22 17 20 17 18Z" fill="white"/>
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2">
+                          {active.name}
+                          <CheckCircle2 className="w-4 h-4 text-blue-500" />
+                          <span className={`text-[11px] font-bold px-2 py-0.5 rounded border ${active.badgeClass}`}>{active.badge}</span>
+                        </h3>
+                        <p className="text-sm text-slate-500 flex items-center gap-1 mt-0.5"><MapPin className="w-3.5 h-3.5" /> {product.seller.location}</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                      {[
+                        { label: "Founded", value: active.shopInfo.founded },
+                        { label: "Avg. Rating", value: active.shopInfo.rating },
+                        { label: "Total Sales", value: active.shopInfo.totalSales },
+                        { label: "Response Time", value: active.shopInfo.responseTime },
+                      ].map((stat, i) => (
+                        <div key={i} className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-center">
+                          <p className="text-xs font-semibold text-slate-500 mb-1">{stat.label}</p>
+                          <p className="font-heading font-bold text-slate-900">{stat.value}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mb-5">
+                      <h4 className="font-bold text-slate-800 mb-3">Seller Offers & Facilities</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {active.facilities.map((f, i) => {
+                          const FIcon = f.icon;
+                          return (
+                            <span key={i} className={`flex items-center gap-1.5 text-sm font-bold px-3 py-1.5 rounded-full border ${f.color}`}>
+                              <FIcon className="w-3.5 h-3.5" /> {f.label}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-800 mb-2">Return Policy</h4>
+                      <p className="text-sm text-slate-600 bg-amber-50 border border-amber-100 rounded-xl p-4">{active.shopInfo.returnPolicy}</p>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="qa" className="text-slate-600 text-sm mt-0">
+                    No questions asked yet. Be the first to ask!
+                  </TabsContent>
+                </div>
+              </Tabs>
+            </div>
+          </>
+        );
+      })()}
 
       {/* Similar Products */}
       <section className="mt-8">
