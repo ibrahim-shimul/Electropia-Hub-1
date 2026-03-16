@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Electropia Hub"
+version = "1.0.0"
+id = "artifacts/electropia-hub"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+localPort = 25235
+name = "web"
+paths = ["/"]
+
+[services.development]
+run = "pnpm --filter @workspace/electropia-hub run dev"
+
+[services.env]
+PORT = "25235"
+BASE_PATH = "/"
+
+[services.production]
+build = ["pnpm", "--filter", "@workspace/electropia-hub", "run", "build"]
+publicDir = "artifacts/electropia-hub/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
