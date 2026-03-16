@@ -374,16 +374,11 @@ export default function ProductDetails() {
               <h2 className="font-heading font-bold text-lg text-slate-900 mb-5">Available Sellers</h2>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 {SELLERS.map((seller, idx) => {
-                  const isSelected = selectedSeller === idx;
                   return (
                     <div
                       key={idx}
                       onClick={() => setSelectedSeller(idx)}
-                      className={`border rounded-xl p-3 flex flex-col gap-2.5 cursor-pointer transition-all ${
-                        isSelected
-                          ? "border-primary bg-primary/5 shadow-md shadow-primary/10 ring-1 ring-primary/20"
-                          : "border-slate-200 hover:border-primary/40 hover:shadow-sm"
-                      }`}
+                      className="border rounded-xl p-3 flex flex-col gap-2.5 cursor-pointer transition-all border-slate-200 hover:border-primary/40 hover:shadow-sm"
                     >
                       {/* Seller header */}
                       <div className="flex items-start justify-between gap-1.5">
@@ -415,13 +410,6 @@ export default function ProductDetails() {
                             </p>
                           </div>
                         </div>
-                        {isSelected && (
-                          <div className="w-4 h-4 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5">
-                            <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                            </svg>
-                          </div>
-                        )}
                       </div>
 
                       {/* Shop type tags row */}
