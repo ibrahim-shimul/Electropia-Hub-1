@@ -16,6 +16,12 @@ export default function ProductDetails() {
   const [selectedColor, setSelectedColor] = useState("White");
   const [selectedCapacity, setSelectedCapacity] = useState("1.5 Ton");
   const [dealQtys, setDealQtys] = useState([1, 1, 1]);
+  const [sellerAddons, setSellerAddons] = useState<(number | null)[]>([null, null, null, null]);
+
+  const ADDONS = [
+    { label: "Installation Only", price: 500 },
+    { label: "Installation + Angle Bar", price: 1200 },
+  ];
 
   const product = {
     name: "SAFE E18KINV Intelligent Inverter Split Air Conditioner - 1.5 Ton",
@@ -516,26 +522,67 @@ export default function ProductDetails() {
                         })}
                       </div>
 
-                      {/* Price */}
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[11px] text-slate-400 line-through">৳{product.originalPrice.toLocaleString()}</span>
-                        <span className="font-heading font-black text-base text-primary">৳{product.price.toLocaleString()}</span>
+                      {/* Choose Addons */}
+                      <div onClick={e => e.stopPropagation()}>
+                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Choose Addon:</p>
+                        <div className="flex flex-col gap-1">
+                          {ADDONS.map((addon, ai) => {
+                            const isSelected = sellerAddons[idx] === ai;
+                            return (
+                              <button
+                                key={ai}
+                                onClick={() => setSellerAddons(prev => prev.map((v, pi) => pi === idx ? (v === ai ? null : ai) : v))}
+                                className={`flex items-center justify-between w-full text-left px-2.5 py-1.5 rounded-lg border text-[10px] font-bold transition-all ${
+                                  isSelected
+                                    ? "border-primary bg-primary/5 text-primary"
+                                    : "border-slate-200 text-slate-600 hover:border-primary/40"
+                                }`}
+                              >
+                                <span className="flex items-center gap-1.5">
+                                  <span className={`w-3 h-3 rounded-full border-2 flex items-center justify-center shrink-0 ${isSelected ? "border-primary bg-primary" : "border-slate-300"}`}>
+                                    {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white block" />}
+                                  </span>
+                                  {addon.label}
+                                </span>
+                                <span className={isSelected ? "text-primary" : "text-slate-400"}>+৳{addon.price}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
 
-                      {/* Qty + Buttons */}
-                      <div className="flex items-center gap-1.5 mt-auto">
-                        <div className="flex items-center border border-slate-200 rounded-md overflow-hidden h-8 shrink-0">
-                          <button className="w-7 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 font-bold text-base leading-none">-</button>
-                          <div className="w-7 h-full flex items-center justify-center font-bold text-slate-900 border-x border-slate-200 text-xs">1</div>
-                          <button className="w-7 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 font-bold text-base leading-none">+</button>
-                        </div>
-                        <Button className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold h-8 text-[10px] px-2">
-                          ADD TO CART
-                        </Button>
-                        <Button className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold h-8 text-[10px] px-2">
-                          BUY NOW
-                        </Button>
-                      </div>
+                      {/* Price */}
+                      {(() => {
+                        const addonIdx = sellerAddons[idx];
+                        const addonPrice = addonIdx !== null ? ADDONS[addonIdx].price : 0;
+                        const totalPrice = product.price + addonPrice;
+                        return (
+                          <>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[11px] text-slate-400 line-through">৳{product.originalPrice.toLocaleString()}</span>
+                              <span className="font-heading font-black text-base text-primary">৳{totalPrice.toLocaleString()}</span>
+                              {addonPrice > 0 && (
+                                <span className="text-[9px] text-slate-400 font-semibold">(incl. addon)</span>
+                              )}
+                            </div>
+
+                            {/* Qty + Buttons */}
+                            <div className="flex items-center gap-1.5 mt-auto" onClick={e => e.stopPropagation()}>
+                              <div className="flex items-center border border-slate-200 rounded-md overflow-hidden h-8 shrink-0">
+                                <button className="w-7 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 font-bold text-base leading-none">-</button>
+                                <div className="w-7 h-full flex items-center justify-center font-bold text-slate-900 border-x border-slate-200 text-xs">1</div>
+                                <button className="w-7 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 font-bold text-base leading-none">+</button>
+                              </div>
+                              <Button className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold h-8 text-[10px] px-2">
+                                {addonPrice > 0 ? `CART ৳${totalPrice.toLocaleString()}` : "ADD TO CART"}
+                              </Button>
+                              <Button className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold h-8 text-[10px] px-2">
+                                BUY NOW
+                              </Button>
+                            </div>
+                          </>
+                        );
+                      })()}
                     </div>
                   );
                 })}
