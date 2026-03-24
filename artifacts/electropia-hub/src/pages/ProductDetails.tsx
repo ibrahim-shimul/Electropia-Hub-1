@@ -522,6 +522,22 @@ export default function ProductDetails() {
                         })}
                       </div>
 
+                      {/* B2B Pricing */}
+                      <div className="flex items-center gap-1 flex-wrap bg-amber-50 border border-amber-200 rounded-lg px-2 py-1.5">
+                        <span className="text-[9px] font-black text-amber-700 uppercase tracking-wide shrink-0">B2B:</span>
+                        {[
+                          { range: "10–19 pcs", price: "৳46,999" },
+                          { range: "20–29 pcs", price: "৳45,999" },
+                          { range: "30+ pcs", price: "৳44,999" },
+                        ].map((tier, ti) => (
+                          <span key={ti} className="flex items-center gap-1 text-[9px] font-bold text-amber-800">
+                            {ti > 0 && <span className="text-amber-400 font-normal">·</span>}
+                            <span className="text-amber-600">{tier.range}</span>
+                            <span className="text-amber-900">{tier.price}</span>
+                          </span>
+                        ))}
+                      </div>
+
                       {/* Choose Addons */}
                       <div onClick={e => e.stopPropagation()}>
                         <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Choose Addon:</p>
