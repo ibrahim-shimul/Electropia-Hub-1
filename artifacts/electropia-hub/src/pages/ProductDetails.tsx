@@ -564,18 +564,21 @@ export default function ProductDetails() {
                     mrp: 70900, groupPrice: 43999, bookingPrice: 500,
                     target: 100, joined: 32, orderLimit: 3,
                     expiry: "15/04/2026, 23:59:59",
+                    reserved24h: 5, reservedWeek: 35,
                   },
                   {
                     seller: "Brand Direct BD", badge: "Brand Official", badgeClass: "bg-amber-100 text-amber-700 border-amber-200",
                     mrp: 70900, groupPrice: 44500, bookingPrice: 500,
                     target: 40, joined: 18, orderLimit: 2,
                     expiry: "20/04/2026, 23:59:59",
+                    reserved24h: 3, reservedWeek: 18,
                   },
                   {
                     seller: "TechMart BD", badge: "Recommended", badgeClass: "bg-blue-100 text-blue-700 border-blue-200",
                     mrp: 70900, groupPrice: 45000, bookingPrice: 300,
                     target: 30, joined: 7, orderLimit: 3,
                     expiry: "30/04/2026, 23:59:59",
+                    reserved24h: 2, reservedWeek: 11,
                   },
                 ].map((deal, i) => {
                   const qty = dealQtys[i];
@@ -614,6 +617,15 @@ export default function ProductDetails() {
                           </div>
                         </div>
 
+                        {/* Urgency / Social proof */}
+                        <div className="flex items-center gap-1.5 bg-rose-50 border border-rose-100 rounded-lg px-3 py-2">
+                          <span className="text-rose-500 text-base leading-none">🔥</span>
+                          <p className="text-[11px] font-bold text-rose-700">
+                            <span className="text-rose-600">{String(deal.reserved24h).padStart(2, "0")} items</span> reserved in last 24hrs!&nbsp;
+                            <span className="text-rose-600">{deal.reservedWeek}</span> in this week!!
+                          </p>
+                        </div>
+
                         {/* N.B. note */}
                         <div className="bg-amber-50 border border-amber-100 rounded-lg p-3 text-[11px] text-slate-600 leading-relaxed">
                           <span className="font-bold text-slate-800">N.B: This is a Group Buy Offer: </span>
@@ -648,6 +660,20 @@ export default function ProductDetails() {
                             <span className="text-primary">{deal.target - deal.joined} more needed</span>
                           </div>
                           <Progress value={Math.round((deal.joined / deal.target) * 100)} className="h-1.5 bg-slate-100 [&>div]:bg-gradient-to-r [&>div]:from-primary [&>div]:to-indigo-500" />
+                        </div>
+
+                        {/* Delivery info checklist */}
+                        <div className="border border-slate-200 rounded-lg divide-y divide-slate-100 overflow-hidden">
+                          <div className="flex items-center gap-2.5 px-3 py-2.5 bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer">
+                            <span className="text-[10px] font-extrabold text-primary bg-primary/10 rounded-full w-4 h-4 flex items-center justify-center shrink-0">1</span>
+                            <span className="text-[11px] font-semibold text-slate-700">Add Delivery Info</span>
+                            <ChevronRight className="w-3 h-3 text-slate-400 ml-auto" />
+                          </div>
+                          <div className="flex items-center gap-2.5 px-3 py-2.5 bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer">
+                            <span className="text-[10px] font-extrabold text-primary bg-primary/10 rounded-full w-4 h-4 flex items-center justify-center shrink-0">2</span>
+                            <span className="text-[11px] font-semibold text-slate-700">Estimated Delivery Time</span>
+                            <ChevronRight className="w-3 h-3 text-slate-400 ml-auto" />
+                          </div>
                         </div>
 
                         {/* Actions: qty + Add to Cart + Join the Group */}
