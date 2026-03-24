@@ -15,6 +15,7 @@ export default function ProductDetails() {
   const [selectedSeller, setSelectedSeller] = useState(0);
   const [selectedColor, setSelectedColor] = useState("White");
   const [selectedCapacity, setSelectedCapacity] = useState("1.5 Ton");
+  const [dealQtys, setDealQtys] = useState([1, 1, 1]);
 
   const product = {
     name: "SAFE E18KINV Intelligent Inverter Split Air Conditioner - 1.5 Ton",
@@ -556,57 +557,114 @@ export default function ProductDetails() {
                 </Badge>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
-                  { seller: "Walton Official Store", badge: "Verified Seller", badgeClass: "bg-emerald-100 text-emerald-700 border-emerald-200", groupPrice: 43999, originalPrice: 47999, joined: 32, target: 50, endsIn: "14h 20m", deposit: 500 },
-                  { seller: "Brand Direct BD", badge: "Brand Official", badgeClass: "bg-amber-100 text-amber-700 border-amber-200", groupPrice: 44500, originalPrice: 47999, joined: 18, target: 40, endsIn: "2d 6h", deposit: 500 },
-                  { seller: "TechMart BD", badge: "Recommended", badgeClass: "bg-blue-100 text-blue-700 border-blue-200", groupPrice: 45000, originalPrice: 47999, joined: 7, target: 30, endsIn: "5d 12h", deposit: 300 },
+                  {
+                    seller: "Walton Official Store", badge: "Verified Seller", badgeClass: "bg-emerald-100 text-emerald-700 border-emerald-200",
+                    mrp: 70900, groupPrice: 43999, bookingPrice: 500,
+                    target: 100, joined: 32, orderLimit: 3,
+                    expiry: "15/04/2026, 23:59:59",
+                  },
+                  {
+                    seller: "Brand Direct BD", badge: "Brand Official", badgeClass: "bg-amber-100 text-amber-700 border-amber-200",
+                    mrp: 70900, groupPrice: 44500, bookingPrice: 500,
+                    target: 40, joined: 18, orderLimit: 2,
+                    expiry: "20/04/2026, 23:59:59",
+                  },
+                  {
+                    seller: "TechMart BD", badge: "Recommended", badgeClass: "bg-blue-100 text-blue-700 border-blue-200",
+                    mrp: 70900, groupPrice: 45000, bookingPrice: 300,
+                    target: 30, joined: 7, orderLimit: 3,
+                    expiry: "30/04/2026, 23:59:59",
+                  },
                 ].map((deal, i) => {
-                  const progress = Math.round((deal.joined / deal.target) * 100);
-                  const needed = deal.target - deal.joined;
+                  const qty = dealQtys[i];
+                  const setQty = (v: number) => setDealQtys(prev => prev.map((q, idx) => idx === i ? Math.max(1, Math.min(deal.orderLimit, v)) : q));
                   return (
-                    <div key={i} className="border border-slate-200 rounded-xl p-4 flex flex-col gap-3 hover:border-primary/30 hover:shadow-sm transition-all">
-                      {/* Seller */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-lg bg-blue-900 flex items-center justify-center shrink-0">
-                            <svg viewBox="0 0 40 40" className="w-6 h-6" fill="none">
-                              <circle cx="20" cy="20" r="20" fill="#1e3a5f"/>
-                              <path d="M14 14 C14 14 16 10 20 10 C24 10 26 14 26 14 L28 28 L20 24 L12 28 Z" fill="#e8b84b"/>
-                            </svg>
+                    <div key={i} className="border border-slate-200 rounded-xl overflow-hidden hover:border-primary/30 hover:shadow-sm transition-all flex flex-col">
+
+                      {/* Seller header */}
+                      <div className="flex items-center gap-2.5 px-4 py-3 border-b border-slate-100 bg-slate-50">
+                        <div className="w-7 h-7 rounded-md bg-blue-900 flex items-center justify-center shrink-0">
+                          <svg viewBox="0 0 40 40" className="w-5 h-5" fill="none">
+                            <circle cx="20" cy="20" r="20" fill="#1e3a5f"/>
+                            <path d="M14 14 C14 14 16 10 20 10 C24 10 26 14 26 14 L28 28 L20 24 L12 28 Z" fill="#e8b84b"/>
+                          </svg>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-bold text-slate-800 truncate">{deal.seller}</p>
+                        </div>
+                        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border shrink-0 ${deal.badgeClass}`}>{deal.badge}</span>
+                      </div>
+
+                      <div className="p-4 flex flex-col gap-4 flex-1">
+                        {/* Price row: MRP | Group Buy Price | Booking Price */}
+                        <div className="grid grid-cols-3 gap-1 text-center divide-x divide-slate-100">
+                          <div className="pr-2">
+                            <p className="text-[10px] font-semibold text-slate-400 mb-0.5">MRP</p>
+                            <p className="text-sm font-bold text-slate-500 line-through">৳{deal.mrp.toLocaleString()}</p>
+                          </div>
+                          <div className="px-2">
+                            <p className="text-[10px] font-semibold text-slate-400 mb-0.5">Group Buy Price</p>
+                            <p className="text-sm font-extrabold text-primary">৳{deal.groupPrice.toLocaleString()}</p>
+                          </div>
+                          <div className="pl-2">
+                            <p className="text-[10px] font-semibold text-slate-400 mb-0.5">Booking Price</p>
+                            <p className="text-sm font-extrabold text-emerald-600">৳{deal.bookingPrice.toLocaleString()}</p>
+                          </div>
+                        </div>
+
+                        {/* N.B. note */}
+                        <div className="bg-amber-50 border border-amber-100 rounded-lg p-3 text-[11px] text-slate-600 leading-relaxed">
+                          <span className="font-bold text-slate-800">N.B: This is a Group Buy Offer: </span>
+                          If {deal.target} customers join this Group Buy deal by {deal.expiry.split(",")[0]}, each participant will receive the product at a special price of ৳{deal.groupPrice.toLocaleString()}. If the required number of participants is not reached within the deadline, the deal will be cancelled and all booking payments will be fully refunded. One participant can order maximum of {deal.orderLimit} units of product in a single order.
+                        </div>
+
+                        {/* Order Limit note */}
+                        <p className="text-[11px] font-bold text-slate-700">
+                          Order Limit: <span className="font-semibold text-slate-500">Maximum {deal.orderLimit} units per participant.</span>
+                        </p>
+
+                        {/* Info row: Target Group | Expired On | Order Limit */}
+                        <div className="grid grid-cols-3 gap-1 text-center divide-x divide-slate-100 border border-slate-100 rounded-lg py-2.5 bg-slate-50">
+                          <div>
+                            <p className="text-[9px] font-semibold text-slate-400 mb-0.5">Target Group</p>
+                            <p className="text-xs font-extrabold text-slate-800">{deal.target}</p>
                           </div>
                           <div>
-                            <p className="text-[11px] font-bold text-slate-800 leading-tight">{deal.seller}</p>
-                            <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${deal.badgeClass}`}>{deal.badge}</span>
+                            <p className="text-[9px] font-semibold text-slate-400 mb-0.5">Expired On</p>
+                            <p className="text-[10px] font-bold text-slate-800 leading-tight">{deal.expiry}</p>
+                          </div>
+                          <div>
+                            <p className="text-[9px] font-semibold text-slate-400 mb-0.5">Order Limit</p>
+                            <p className="text-xs font-extrabold text-slate-800">0{deal.orderLimit} units/participant</p>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <p className="text-[10px] text-slate-400 flex items-center gap-0.5 justify-end"><Clock className="w-2.5 h-2.5" /> {deal.endsIn}</p>
+
+                        {/* Progress */}
+                        <div>
+                          <div className="flex justify-between text-[10px] font-bold mb-1.5">
+                            <span className="text-slate-600">{deal.joined} joined</span>
+                            <span className="text-primary">{deal.target - deal.joined} more needed</span>
+                          </div>
+                          <Progress value={Math.round((deal.joined / deal.target) * 100)} className="h-1.5 bg-slate-100 [&>div]:bg-gradient-to-r [&>div]:from-primary [&>div]:to-indigo-500" />
+                        </div>
+
+                        {/* Actions: qty + Add to Cart + Join the Group */}
+                        <div className="flex items-center gap-2 mt-auto pt-1">
+                          <div className="flex items-center border border-slate-200 rounded-lg overflow-hidden h-9 shrink-0">
+                            <button onClick={() => setQty(qty - 1)} className="w-8 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 font-bold text-base leading-none">-</button>
+                            <div className="w-8 h-full flex items-center justify-center font-bold text-slate-900 border-x border-slate-200 text-xs">{String(qty).padStart(2, "0")}</div>
+                            <button onClick={() => setQty(qty + 1)} className="w-8 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 font-bold text-base leading-none">+</button>
+                          </div>
+                          <Button variant="outline" className="flex-1 font-bold h-9 text-[11px] border-slate-300 text-slate-700 hover:bg-slate-50 px-2">
+                            ADD TO CART
+                          </Button>
+                          <Button className="flex-1 bg-primary hover:bg-primary/90 text-white font-bold h-9 text-[11px] px-2">
+                            JOIN THE GROUP
+                          </Button>
                         </div>
                       </div>
-
-                      {/* Price */}
-                      <div className="flex items-baseline gap-2">
-                        <span className="font-heading font-black text-xl text-primary">৳{deal.groupPrice.toLocaleString()}</span>
-                        <span className="text-xs text-slate-400 line-through">৳{deal.originalPrice.toLocaleString()}</span>
-                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
-                          Save ৳{(deal.originalPrice - deal.groupPrice).toLocaleString()}
-                        </span>
-                      </div>
-
-                      {/* Progress */}
-                      <div>
-                        <div className="flex justify-between text-[10px] font-bold mb-1.5">
-                          <span className="text-slate-600">{deal.joined} joined</span>
-                          <span className="text-primary">{needed} more needed</span>
-                        </div>
-                        <Progress value={progress} className="h-1.5 bg-slate-100 [&>div]:bg-gradient-to-r [&>div]:from-primary [&>div]:to-indigo-500" />
-                      </div>
-
-                      {/* Join button */}
-                      <Button className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-9 text-xs mt-auto">
-                        Join Deal (Deposit ৳{deal.deposit})
-                      </Button>
                     </div>
                   );
                 })}
