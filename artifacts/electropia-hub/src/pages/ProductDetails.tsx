@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Star, Heart, Share2, ShieldCheck, MapPin, ChevronRight, CheckCircle2, Users, Clock, AlertCircle, Truck, Wrench, RotateCcw, Award } from "lucide-react";
+import { Star, Heart, Share2, ShieldCheck, MapPin, ChevronRight, CheckCircle2, Users, Clock, AlertCircle, Truck, Package, Wrench, RotateCcw, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -484,15 +484,19 @@ export default function ProductDetails() {
 
                       {/* Delivery */}
                       <div className="grid grid-cols-2 gap-1.5 text-[10px]">
-                        <div className="bg-slate-50 rounded-md p-2 border border-slate-100">
-                          <p className="text-slate-500 mb-0.5">Inside Dhaka</p>
+                        <div className="bg-blue-50 rounded-md p-2 border border-blue-100">
+                          <p className="text-blue-500 mb-1 flex items-center gap-1 font-semibold">
+                            <Truck className="w-3 h-3" /> Inside Dhaka
+                          </p>
                           <p className="font-bold text-slate-800 text-[11px]">{product.seller.insideDhaka}</p>
                           <p className="text-slate-400 flex items-center gap-0.5 mt-0.5">
                             <Clock className="w-2 h-2" /> {seller.days}
                           </p>
                         </div>
-                        <div className="bg-slate-50 rounded-md p-2 border border-slate-100">
-                          <p className="text-slate-500 mb-0.5">Outside Dhaka</p>
+                        <div className="bg-violet-50 rounded-md p-2 border border-violet-100">
+                          <p className="text-violet-500 mb-1 flex items-center gap-1 font-semibold">
+                            <Package className="w-3 h-3" /> Outside Dhaka
+                          </p>
                           <p className="font-bold text-slate-800 text-[11px]">{product.seller.outsideDhaka}</p>
                           <p className="text-slate-400 flex items-center gap-0.5 mt-0.5">
                             <Clock className="w-2 h-2" /> {seller.outDays}
