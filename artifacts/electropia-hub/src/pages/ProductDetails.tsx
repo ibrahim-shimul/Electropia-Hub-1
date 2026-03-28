@@ -371,10 +371,15 @@ export default function ProductDetails() {
             name: "Walton Official Store",
             badge: "Verified Seller",
             badgeClass: "bg-emerald-100 text-emerald-700 border-emerald-200",
-            days: "2-3 days", outDays: "4-10 days",
-            sold: 13, stock: 17,
-            rating: "4.8",
-            shopTags: ["Flagship Store", "Certified Store", "Top Rated"],
+            extraBadge: "Recommend",
+            discount: 37,
+            rating: "4.8", ratingCount: 153,
+            insideShipping: { retail: "৳60+", b2b: "৳40+", avgDays: "avg. 2days" },
+            outsideShipping: { retail: "৳120+", b2b: "৳80+", avgDays: "avg. 5days" },
+            sold: 127, stock: "17", moqB2B: 10,
+            checkoutLowest: 45970, save: 1430,
+            hasAddons: true,
+            promoOffer: null,
             facilities: [
               { label: "Free Shipping", icon: Truck, color: "text-blue-600 bg-blue-50 border-blue-200" },
               { label: "Free Installation", icon: Wrench, color: "text-purple-600 bg-purple-50 border-purple-200" },
@@ -387,10 +392,15 @@ export default function ProductDetails() {
             name: "Walton Official Store",
             badge: "Brand Official",
             badgeClass: "bg-amber-100 text-amber-700 border-amber-200",
-            days: "2-5 days", outDays: "4-10 days",
-            sold: 13, stock: 17,
-            rating: "4.9",
-            shopTags: ["Official Store", "Certified Store"],
+            extraBadge: null,
+            discount: 37,
+            rating: "4.9", ratingCount: 89,
+            insideShipping: { retail: "৳60+", b2b: "৳40+", avgDays: "avg. 3days" },
+            outsideShipping: { retail: "৳120+", b2b: "৳80+", avgDays: "avg. 6days" },
+            sold: 13, stock: "17", moqB2B: 10,
+            checkoutLowest: 46200, save: 1200,
+            hasAddons: false,
+            promoOffer: { icon: "💳", title: "City Bank Card Offer", desc: "5% cashback, max ৳500 on all City Bank Cards" },
             facilities: [
               { label: "Free Shipping", icon: Truck, color: "text-blue-600 bg-blue-50 border-blue-200" },
               { label: "Brand Warranty", icon: Award, color: "text-emerald-600 bg-emerald-50 border-emerald-200" },
@@ -402,10 +412,15 @@ export default function ProductDetails() {
             name: "Walton Official Store",
             badge: "Recommended",
             badgeClass: "bg-blue-100 text-blue-700 border-blue-200",
-            days: "2-3 days", outDays: "4-10 days",
-            sold: 13, stock: 17,
-            rating: "4.7",
-            shopTags: ["Authorized Reseller"],
+            extraBadge: null,
+            discount: 35,
+            rating: "4.7", ratingCount: 42,
+            insideShipping: { retail: "৳60+", b2b: "৳40+", avgDays: "avg. 2days" },
+            outsideShipping: { retail: "৳120+", b2b: "৳80+", avgDays: "avg. 5days" },
+            sold: 13, stock: "17", moqB2B: 10,
+            checkoutLowest: 46500, save: 900,
+            hasAddons: true,
+            promoOffer: null,
             facilities: [
               { label: "Free Shipping", icon: Truck, color: "text-blue-600 bg-blue-50 border-blue-200" },
               { label: "7 Days Return", icon: RotateCcw, color: "text-amber-600 bg-amber-50 border-amber-200" },
@@ -416,10 +431,15 @@ export default function ProductDetails() {
             name: "Walton Official Store",
             badge: "New Seller",
             badgeClass: "bg-slate-100 text-slate-600 border-slate-200",
-            days: "3-5 days", outDays: "5-12 days",
-            sold: 5, stock: 24,
-            rating: null,
-            shopTags: ["New Store"],
+            extraBadge: null,
+            discount: 33,
+            rating: null, ratingCount: 0,
+            insideShipping: { retail: "৳60+", b2b: "৳40+", avgDays: "avg. 4days" },
+            outsideShipping: { retail: "৳120+", b2b: "৳80+", avgDays: "avg. 7days" },
+            sold: 5, stock: "24", moqB2B: 10,
+            checkoutLowest: 47200, save: 700,
+            hasAddons: false,
+            promoOffer: { icon: "🎁", title: "Combo Offer", desc: "Free smart remote cover worth ৳399 with purchase" },
             facilities: [
               { label: "Free Shipping", icon: Truck, color: "text-blue-600 bg-blue-50 border-blue-200" },
               { label: "Brand Warranty", icon: Award, color: "text-emerald-600 bg-emerald-50 border-emerald-200" },
@@ -438,171 +458,176 @@ export default function ProductDetails() {
                     <div
                       key={idx}
                       onClick={() => setSelectedSeller(idx)}
-                      className="border rounded-xl p-3 flex flex-col gap-2.5 cursor-pointer transition-all border-slate-200 hover:border-primary/40 hover:shadow-sm"
+                      className="border rounded-xl flex flex-col cursor-pointer transition-all border-slate-200 hover:border-primary/40 hover:shadow-md overflow-hidden"
                     >
-                      {/* Seller header */}
-                      <div className="flex items-start justify-between gap-1.5">
-                        <div className="flex items-center gap-2">
-                          <div className="w-10 h-10 rounded-lg bg-blue-900 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
-                            <svg viewBox="0 0 40 40" className="w-8 h-8" fill="none">
+                      {/* Discount badge strip */}
+                      <div className="bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 text-center tracking-wide">
+                        -{seller.discount}% OFF
+                      </div>
+
+                      <div className="p-3 flex flex-col gap-2.5 flex-1">
+                        {/* Header: logo + name + rating */}
+                        <div className="flex items-start gap-2">
+                          <div className="w-11 h-11 rounded-lg bg-blue-900 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
+                            <svg viewBox="0 0 40 40" className="w-9 h-9" fill="none">
                               <circle cx="20" cy="20" r="20" fill="#1e3a5f"/>
                               <path d="M14 14 C14 14 16 10 20 10 C24 10 26 14 26 14 L28 28 L20 24 L12 28 Z" fill="#e8b84b"/>
                               <path d="M17 18 C17 16 18.5 15 20 15 C21.5 15 23 16 23 18 C23 20 21.5 22 20 22 C18.5 22 17 20 17 18Z" fill="white"/>
                             </svg>
                           </div>
-                          <div className="min-w-0">
-                            <h4 className="font-bold text-slate-900 text-xs flex items-center gap-0.5 leading-tight flex-wrap">
-                              {seller.name}
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-0.5 flex-wrap leading-tight mb-0.5">
+                              <span className="font-bold text-slate-900 text-[11px]">{seller.name}</span>
                               <CheckCircle2 className="w-3 h-3 text-blue-500 shrink-0" />
-                              {seller.rating ? (
-                                <span className="flex items-center gap-0.5 text-[10px] font-bold text-amber-500">
-                                  <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
-                                  {seller.rating}
-                                </span>
-                              ) : (
-                                <span className="text-[10px] font-normal text-slate-400 flex items-center gap-0.5">
-                                  <Star className="w-2.5 h-2.5" /> No ratings
-                                </span>
+                            </div>
+                            <div className="flex items-center gap-1 mb-1">
+                              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${seller.badgeClass}`}>{seller.badge}</span>
+                              {seller.extraBadge && (
+                                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded border bg-violet-50 text-violet-700 border-violet-200">{seller.extraBadge}</span>
                               )}
-                            </h4>
+                            </div>
+                            {seller.rating ? (
+                              <div className="flex items-center gap-1">
+                                <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                                <span className="text-[11px] font-bold text-amber-600">{seller.rating}</span>
+                                <span className="text-[10px] text-slate-400">({seller.ratingCount})</span>
+                              </div>
+                            ) : (
+                              <span className="text-[10px] text-slate-400 flex items-center gap-0.5"><Star className="w-2.5 h-2.5" /> No ratings yet</span>
+                            )}
                             <p className="text-[10px] text-slate-500 flex items-center gap-0.5 mt-0.5">
                               <MapPin className="w-2.5 h-2.5" /> {product.seller.location}
                             </p>
                           </div>
                         </div>
-                      </div>
 
-                      {/* Shop type tags row */}
-                      <div className="flex flex-wrap gap-1">
-                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${seller.badgeClass}`}>{seller.badge}</span>
-                        {seller.shopTags.map((tag, ti) => (
-                          <span key={ti} className="text-[10px] font-semibold px-1.5 py-0.5 rounded border bg-slate-50 text-slate-600 border-slate-200">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-
-                      {/* Delivery */}
-                      <div className="grid grid-cols-2 gap-1.5 text-[10px]">
-                        <div className="bg-blue-50 rounded-md p-2 border border-blue-100">
-                          <p className="text-blue-500 mb-1 flex items-center gap-1 font-semibold">
-                            <Truck className="w-3 h-3" /> Inside Dhaka
-                          </p>
-                          <p className="font-bold text-slate-800 text-[11px]">{product.seller.insideDhaka}</p>
-                          <p className="text-slate-400 flex items-center gap-0.5 mt-0.5">
-                            <Clock className="w-2 h-2" /> {seller.days}
-                          </p>
-                        </div>
-                        <div className="bg-violet-50 rounded-md p-2 border border-violet-100">
-                          <p className="text-violet-500 mb-1 flex items-center gap-1 font-semibold">
-                            <Package className="w-3 h-3" /> Outside Dhaka
-                          </p>
-                          <p className="font-bold text-slate-800 text-[11px]">{product.seller.outsideDhaka}</p>
-                          <p className="text-slate-400 flex items-center gap-0.5 mt-0.5">
-                            <Clock className="w-2 h-2" /> {seller.outDays}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Stock count badges */}
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-bold px-2 py-1 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
-                          Sold: {seller.sold}
-                        </span>
-                        <span className="text-[10px] font-bold px-2 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
-                          In Stock ({seller.stock})
-                        </span>
-                      </div>
-
-                      {/* Facilities tags */}
-                      <div className="flex flex-wrap gap-1">
-                        {seller.facilities.map((f, fi) => {
-                          const FIcon = f.icon;
-                          return (
-                            <span key={fi} className={`flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded border ${f.color}`}>
-                              <FIcon className="w-2 h-2" /> {f.label}
-                            </span>
-                          );
-                        })}
-                      </div>
-
-                      {/* B2B Pricing */}
-                      <div className="flex items-center gap-1 flex-wrap bg-amber-50 border border-amber-200 rounded-lg px-2 py-1.5">
-                        <span className="text-[9px] font-black text-amber-700 uppercase tracking-wide shrink-0">B2B:</span>
-                        {[
-                          { range: "10–19 pcs", price: "৳46,999" },
-                          { range: "20–29 pcs", price: "৳45,999" },
-                          { range: "30+ pcs", price: "৳44,999" },
-                        ].map((tier, ti) => (
-                          <span key={ti} className="flex items-center gap-1 text-[9px] font-bold text-amber-800">
-                            {ti > 0 && <span className="text-amber-400 font-normal">·</span>}
-                            <span className="text-amber-600">{tier.range}</span>
-                            <span className="text-amber-900">{tier.price}</span>
-                          </span>
-                        ))}
-                      </div>
-
-                      {/* Choose Addons */}
-                      <div onClick={e => e.stopPropagation()}>
-                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Choose Addon:</p>
-                        <div className="flex flex-col gap-1">
-                          {ADDONS.map((addon, ai) => {
-                            const isSelected = sellerAddons[idx] === ai;
+                        {/* Facilities: horizontal scroll row */}
+                        <div className="flex gap-1 overflow-x-auto pb-0.5 scrollbar-hide">
+                          {seller.facilities.map((f, fi) => {
+                            const FIcon = f.icon;
                             return (
-                              <button
-                                key={ai}
-                                onClick={() => setSellerAddons(prev => prev.map((v, pi) => pi === idx ? (v === ai ? null : ai) : v))}
-                                className={`flex items-center justify-between w-full text-left px-2.5 py-1.5 rounded-lg border text-[10px] font-bold transition-all ${
-                                  isSelected
-                                    ? "border-primary bg-primary/5 text-primary"
-                                    : "border-slate-200 text-slate-600 hover:border-primary/40"
-                                }`}
-                              >
-                                <span className="flex items-center gap-1.5">
-                                  <span className={`w-3 h-3 rounded-full border-2 flex items-center justify-center shrink-0 ${isSelected ? "border-primary bg-primary" : "border-slate-300"}`}>
-                                    {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white block" />}
-                                  </span>
-                                  {addon.label}
-                                </span>
-                                <span className={isSelected ? "text-primary" : "text-slate-400"}>+৳{addon.price}</span>
-                              </button>
+                              <span key={fi} className={`flex items-center gap-0.5 text-[9px] font-bold px-2 py-1 rounded-full border whitespace-nowrap shrink-0 ${f.color}`}>
+                                <FIcon className="w-2.5 h-2.5 shrink-0" /> {f.label}
+                              </span>
                             );
                           })}
                         </div>
-                      </div>
 
-                      {/* Price */}
-                      {(() => {
-                        const addonIdx = sellerAddons[idx];
-                        const addonPrice = addonIdx !== null ? ADDONS[addonIdx].price : 0;
-                        const totalPrice = product.price + addonPrice;
-                        return (
-                          <>
-                            <div className="flex items-center gap-1.5">
-                              <span className="text-[11px] text-slate-400 line-through">৳{product.originalPrice.toLocaleString()}</span>
-                              <span className="font-heading font-black text-base text-primary">৳{totalPrice.toLocaleString()}</span>
-                              {addonPrice > 0 && (
-                                <span className="text-[9px] text-slate-400 font-semibold">(incl. addon)</span>
-                              )}
+                        {/* Delivery: 2-col with retail + B2B rates */}
+                        <div className="grid grid-cols-2 gap-1.5 text-[10px]">
+                          <div className="bg-blue-50 rounded-lg p-2 border border-blue-100">
+                            <p className="text-blue-600 font-bold flex items-center gap-1 mb-1.5">
+                              <Truck className="w-3.5 h-3.5" /> Inside Dhaka
+                            </p>
+                            <p className="text-slate-400 text-[9px] mb-1">{seller.insideShipping.avgDays}</p>
+                            <p className="text-slate-600">Retail (Upto 9): <span className="font-bold text-slate-800">{seller.insideShipping.retail}</span></p>
+                            <p className="text-slate-600">B2B (9+): <span className="font-bold text-slate-800">{seller.insideShipping.b2b}</span></p>
+                          </div>
+                          <div className="bg-violet-50 rounded-lg p-2 border border-violet-100">
+                            <p className="text-violet-600 font-bold flex items-center gap-1 mb-1.5">
+                              <Package className="w-3.5 h-3.5" /> Outside Dhaka
+                            </p>
+                            <p className="text-slate-400 text-[9px] mb-1">{seller.outsideShipping.avgDays}</p>
+                            <p className="text-slate-600">Retail (Upto 9): <span className="font-bold text-slate-800">{seller.outsideShipping.retail}</span></p>
+                            <p className="text-slate-600">B2B (9+): <span className="font-bold text-slate-800">{seller.outsideShipping.b2b}</span></p>
+                          </div>
+                        </div>
+
+                        {/* Addon section OR Promo offer (fixed height) */}
+                        {seller.hasAddons ? (
+                          <div onClick={e => e.stopPropagation()}>
+                            <div className="flex items-center justify-between mb-1.5">
+                              <p className="text-[10px] font-black text-slate-700 uppercase tracking-wider">Choose Addon:</p>
                             </div>
+                            <div className="flex gap-1.5 overflow-x-auto pb-0.5 scrollbar-hide">
+                              {ADDONS.map((addon, ai) => {
+                                const isSelected = sellerAddons[idx] === ai;
+                                return (
+                                  <button
+                                    key={ai}
+                                    onClick={() => setSellerAddons(prev => prev.map((v, pi) => pi === idx ? (v === ai ? null : ai) : v))}
+                                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-[10px] font-bold transition-all whitespace-nowrap shrink-0 ${
+                                      isSelected
+                                        ? "border-primary bg-primary/5 text-primary"
+                                        : "border-slate-200 text-slate-600 hover:border-primary/40"
+                                    }`}
+                                  >
+                                    <span className={`w-3 h-3 rounded-full border-2 flex items-center justify-center shrink-0 ${isSelected ? "border-primary bg-primary" : "border-slate-300"}`}>
+                                      {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white block" />}
+                                    </span>
+                                    {addon.label} <span className="opacity-60">(৳{addon.price.toLocaleString()})</span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg px-2.5 py-2 flex items-start gap-2">
+                            <span className="text-base leading-none mt-0.5 shrink-0">{seller.promoOffer?.icon}</span>
+                            <div className="min-w-0">
+                              <p className="text-[10px] font-black text-amber-800 leading-tight">{seller.promoOffer?.title}</p>
+                              <p className="text-[9px] text-amber-700 leading-snug mt-0.5">{seller.promoOffer?.desc}</p>
+                            </div>
+                          </div>
+                        )}
 
-                            {/* Qty + Buttons */}
+                        {/* Price: 3-col (original+current | checkout lowest | save) */}
+                        {(() => {
+                          const addonIdx = seller.hasAddons ? sellerAddons[idx] : null;
+                          const addonPrice = addonIdx !== null ? ADDONS[addonIdx].price : 0;
+                          const currentPrice = product.price + addonPrice;
+                          return (
+                            <div className="grid grid-cols-3 gap-1 text-center">
+                              <div className="flex flex-col">
+                                <span className="text-[9px] text-slate-400 line-through leading-none mb-0.5">৳{product.originalPrice.toLocaleString()}</span>
+                                <span className="font-heading font-black text-[13px] text-primary leading-tight">৳{currentPrice.toLocaleString()}</span>
+                              </div>
+                              <div className="flex flex-col border-x border-slate-100 px-1">
+                                <span className="text-[9px] text-slate-400 leading-none mb-0.5">Checkout lowest</span>
+                                <span className="font-heading font-black text-[12px] text-primary leading-tight">৳{seller.checkoutLowest.toLocaleString()}</span>
+                              </div>
+                              <div className="flex flex-col bg-rose-50 rounded-md px-1 py-0.5">
+                                <span className="text-[9px] text-slate-400 leading-none mb-0.5">Save</span>
+                                <span className="font-heading font-black text-[12px] text-rose-600 leading-tight">৳{(seller.save + addonPrice).toLocaleString()}</span>
+                              </div>
+                            </div>
+                          );
+                        })()}
+
+                        {/* Stock badges row */}
+                        <div className="grid grid-cols-3 gap-1 text-center text-[9px] font-bold">
+                          <span className="bg-rose-50 text-rose-600 border border-rose-100 rounded-md py-1 px-0.5">Sold ({seller.sold})</span>
+                          <span className="bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-md py-1 px-0.5">In Stock ({seller.stock})</span>
+                          <span className="bg-violet-50 text-violet-700 border border-violet-100 rounded-md py-1 px-0.5">B2B MOQ {seller.moqB2B}</span>
+                        </div>
+
+                        {/* B2B Pricing tagline */}
+                        <p className="text-[9px] text-slate-500 leading-snug">
+                          Buy 10–19pcs at ৳46,999/-, 20–29pcs at ৳45,999/- and 30+ pcs at ৳44,999/-
+                        </p>
+
+                        {/* Qty + Buttons */}
+                        {(() => {
+                          const addonIdx = seller.hasAddons ? sellerAddons[idx] : null;
+                          const addonPrice = addonIdx !== null ? ADDONS[addonIdx].price : 0;
+                          const totalPrice = product.price + addonPrice;
+                          return (
                             <div className="flex items-center gap-1.5 mt-auto" onClick={e => e.stopPropagation()}>
                               <div className="flex items-center border border-slate-200 rounded-md overflow-hidden h-8 shrink-0">
-                                <button className="w-7 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 font-bold text-base leading-none">-</button>
-                                <div className="w-7 h-full flex items-center justify-center font-bold text-slate-900 border-x border-slate-200 text-xs">1</div>
-                                <button className="w-7 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 font-bold text-base leading-none">+</button>
+                                <button className="w-6 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 font-bold text-sm leading-none">-</button>
+                                <div className="w-6 h-full flex items-center justify-center font-bold text-slate-900 border-x border-slate-200 text-xs">1</div>
+                                <button className="w-6 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 font-bold text-sm leading-none">+</button>
                               </div>
-                              <Button className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold h-8 text-[10px] px-2">
-                                {addonPrice > 0 ? `CART ৳${totalPrice.toLocaleString()}` : "ADD TO CART"}
+                              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white font-bold h-8 text-[10px] px-1">
+                                {addonPrice > 0 ? `৳${totalPrice.toLocaleString()}` : "Add to cart"}
                               </Button>
-                              <Button className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold h-8 text-[10px] px-2">
-                                BUY NOW
+                              <Button className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold h-8 text-[10px] px-1">
+                                Buy Now
                               </Button>
                             </div>
-                          </>
-                        );
-                      })()}
+                          );
+                        })()}
+                      </div>
                     </div>
                   );
                 })}
