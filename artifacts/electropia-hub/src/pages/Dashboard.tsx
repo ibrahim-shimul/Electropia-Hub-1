@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LayoutDashboard, Package, Heart, MapPin, Wallet, Bell, UserCog, LogOut } from "lucide-react";
+import { LayoutDashboard, Package, Heart, MapPin, Wallet, Bell, UserCog, LogOut, Users } from "lucide-react";
 import Overview from "@/components/dashboard/Overview";
 import Orders from "@/components/dashboard/Orders";
 import WalletTab from "@/components/dashboard/Wallet";
@@ -7,6 +7,7 @@ import Wishlist from "@/components/dashboard/Wishlist";
 import Addresses from "@/components/dashboard/Addresses";
 import Notifications from "@/components/dashboard/Notifications";
 import AccountSettings from "@/components/dashboard/AccountSettings";
+import MyGroupDeals from "@/components/dashboard/MyGroupDeals";
 import { useRoute, useLocation } from "wouter";
 
 export default function Dashboard() {
@@ -23,6 +24,7 @@ export default function Dashboard() {
   const menuItems = [
     { id: "overview", label: "Overview", icon: LayoutDashboard },
     { id: "orders", label: "Orders", icon: Package },
+    { id: "group_deals", label: "My Group Deals", icon: Users, badge: "1 Active" },
     { id: "wishlist", label: "Wishlist", icon: Heart },
     { id: "addresses", label: "Addresses", icon: MapPin },
     { id: "wallet", label: "Wallet", icon: Wallet },
@@ -54,6 +56,11 @@ export default function Dashboard() {
                 >
                   <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-slate-400"}`} />
                   {item.label}
+                  {item.badge && (
+                    <span className={`ml-auto text-[10px] px-1.5 py-0.5 rounded-full font-bold ${isActive ? "bg-white/20 text-white" : "bg-purple-100 text-purple-700"}`}>
+                      {item.badge}
+                    </span>
+                  )}
                 </button>
               </div>
             );
@@ -72,6 +79,7 @@ export default function Dashboard() {
       <main className="flex-1 bg-[#F8F9FA] min-h-[calc(100vh-120px)]">
         {activeTab === "overview" && <Overview onNavigate={handleTabClick} />}
         {activeTab === "orders" && <Orders />}
+        {activeTab === "group_deals" && <MyGroupDeals />}
         {activeTab === "wishlist" && <Wishlist />}
         {activeTab === "addresses" && <Addresses />}
         {activeTab === "wallet" && <WalletTab />}
