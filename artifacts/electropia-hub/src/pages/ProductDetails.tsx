@@ -17,6 +17,7 @@ export default function ProductDetails() {
   const [selectedCapacity, setSelectedCapacity] = useState("1.5 Ton");
   const [dealQtys, setDealQtys] = useState([1, 1, 1]);
   const [sellerAddons, setSellerAddons] = useState<(number | null)[]>([null, null, null, null]);
+  const [reviewSubTab, setReviewSubTab] = useState<"product" | "seller">("product");
 
   const ADDONS = [
     { label: "Installation Only", price: 500 },
@@ -790,107 +791,344 @@ export default function ProductDetails() {
             </div>
 
             {/* Tabs Section */}
-            <div className="bg-white border border-slate-200 rounded-xl mt-4 overflow-hidden">
-              <Tabs defaultValue="reviews" className="w-full">
-                <TabsList className="w-full justify-start rounded-none border-b border-slate-200 bg-slate-50 h-auto p-0">
-                  <TabsTrigger value="reviews" className="rounded-none py-4 px-8 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:shadow-none font-bold text-slate-600 data-[state=active]:text-primary">Reviews</TabsTrigger>
-                  <TabsTrigger value="desc" className="rounded-none py-4 px-8 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:shadow-none font-bold text-slate-600 data-[state=active]:text-primary">Description</TabsTrigger>
-                  <TabsTrigger value="specs" className="rounded-none py-4 px-8 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:shadow-none font-bold text-slate-600 data-[state=active]:text-primary">Specifications</TabsTrigger>
-                  <TabsTrigger value="qa" className="rounded-none py-4 px-8 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:shadow-none font-bold text-slate-600 data-[state=active]:text-primary">Questions & Answers</TabsTrigger>
-                </TabsList>
-                <div className="p-8">
-                  <TabsContent value="reviews" className="mt-0">
-                    <div className="flex items-center gap-8 mb-8 pb-8 border-b border-slate-100">
-                      <div className="text-center shrink-0">
-                        <p className="font-heading font-black text-5xl text-slate-900">4.6</p>
-                        <div className="flex items-center justify-center gap-0.5 my-2">
-                          {[1,2,3,4,5].map(s => (
-                            <Star key={s} className={`w-4 h-4 ${s <= 5 ? (s <= 4 ? "fill-amber-400 text-amber-400" : "fill-amber-200 text-amber-200") : "text-slate-200"}`} />
+            {(() => {
+              const REVIEW_RATINGS = [{ stars: 5, count: 74 }, { stars: 4, count: 31 }, { stars: 3, count: 14 }, { stars: 2, count: 6 }, { stars: 1, count: 3 }];
+              const TOTAL_REVIEWS = 128;
+
+              const PRODUCT_REVIEWS = [
+                {
+                  name: "Rahim Uddin", rating: 5, date: "Feb 12, 2025",
+                  memberSince: "12/04/2023", purchases: 124,
+                  seller: "Walton Official Store", storeType: "Electropia Flagship Store",
+                  text: "Excellent product! The cooling is very fast and it's super quiet. Installation was smooth and the free installation service was great. Highly recommend to everyone!",
+                  images: [
+                    "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=200&q=80",
+                    "https://images.unsplash.com/photo-1631248422043-e9bb6e60e42d?w=200&q=80",
+                    "https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=200&q=80",
+                  ],
+                  sellerReply: { from: "Walton Official Store", date: "Feb 13, 2025", text: "Thank you so much for your wonderful review, Rahim bhai! We're thrilled you're happy with the product and our installation team. We hope to serve you again soon!" },
+                },
+                {
+                  name: "Kamal Hossain", rating: 4, date: "Jan 28, 2025",
+                  memberSince: "03/09/2022", purchases: 37,
+                  seller: "Walton Official Store", storeType: "Walton Official Store",
+                  text: "Good air conditioner, very energy efficient. The inverter technology really does save electricity. Only minor complaint is the remote control could be better designed.",
+                  images: [
+                    "https://images.unsplash.com/photo-1607400201515-c2c41c07d307?w=200&q=80",
+                  ],
+                  sellerReply: null,
+                },
+                {
+                  name: "Sumaiya Begum", rating: 5, date: "Jan 15, 2025",
+                  memberSince: "18/11/2024", purchases: 8,
+                  seller: "Walton Official Store", storeType: "Electropia Flagship Store",
+                  text: "Best AC I've ever bought! Running for 2 months now without any issue. The auto-clean function is a bonus. Delivery was fast and packaging was excellent.",
+                  images: [],
+                  sellerReply: { from: "Electropia", date: "Jan 16, 2025", text: "Thank you for sharing your experience! We're delighted to know the auto-clean function impressed you. Please feel free to reach out if you need any assistance." },
+                },
+              ];
+
+              const SELLER_REVIEWS = [
+                {
+                  name: "Farhan Ahmed", rating: 5, date: "Mar 05, 2025",
+                  memberSince: "22/06/2023", purchases: 56,
+                  seller: "Walton Official Store", storeType: "Electropia Flagship Store",
+                  text: "Very professional seller. Packed the product extremely well and delivered right on time. Customer support was responsive when I had a query. Will definitely buy from them again!",
+                  images: [
+                    "https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=200&q=80",
+                  ],
+                  sellerReply: { from: "Walton Official Store", date: "Mar 06, 2025", text: "Thank you, Farhan bhai! It was a pleasure serving you. We always strive to deliver on time and keep our customers happy." },
+                },
+                {
+                  name: "Nasrin Akter", rating: 4, date: "Feb 20, 2025",
+                  memberSince: "07/03/2024", purchases: 12,
+                  seller: "Walton Official Store", storeType: "Walton Official Store",
+                  text: "Good seller overall. Responsive communication and proper packaging. Minor delay in delivery but acceptable given the distance.",
+                  images: [],
+                  sellerReply: null,
+                },
+              ];
+
+              const QA_ITEMS = [
+                {
+                  asker: "Md. Sumon Miah", purchaseCount: 2, memberSince: "12/01/2026",
+                  type: "general",
+                  question: "Is this AC suitable for a 200 sq ft room? What power setting should I use?",
+                  replies: [
+                    { from: "Electropia", avatar: "E", color: "bg-primary", text: "Yes, the 1.5 Ton capacity is ideal for a room between 150–200 sq ft. For a 200 sq ft room, we recommend setting it to Auto mode initially and letting the inverter adjust. Feel free to contact us for further guidance!" },
+                  ],
+                },
+                {
+                  asker: "Md. Sumon Miah", purchaseCount: 0, memberSince: "12/01/2026",
+                  type: "seller",
+                  targetSeller: "Walton Official Store",
+                  question: "Do you provide free installation across all districts? What about Sylhet?",
+                  replies: [
+                    { from: "Walton Official Store", avatar: "W", color: "bg-amber-600", text: "We provide free installation within Dhaka city and selected areas. For Sylhet, installation charges apply — typically ৳500–৳800 depending on your specific location. Please message us directly for a confirmed quote." },
+                    { from: "Electropia", avatar: "E", color: "bg-primary", text: "We'd also like to add that our logistics team can help coordinate installation support in major cities outside Dhaka through our authorized service partners." },
+                  ],
+                },
+                {
+                  asker: "Tasnim Jahan", purchaseCount: 14, memberSince: "05/08/2023",
+                  type: "general",
+                  question: "What is the warranty coverage and who handles it — the seller or the brand directly?",
+                  replies: [
+                    { from: "Electropia", avatar: "E", color: "bg-primary", text: "The product comes with a manufacturer's warranty handled directly by SAFE Electronics Bangladesh. For any warranty claims, you can contact them at their nearest service center or through our platform's warranty support system." },
+                  ],
+                },
+              ];
+
+              const renderStars = (rating: number, size = "w-3.5 h-3.5") =>
+                [1,2,3,4,5].map(s => (
+                  <Star key={s} className={`${size} ${s <= rating ? "fill-amber-400 text-amber-400" : "text-slate-200 fill-slate-200"}`} />
+                ));
+
+              const ReviewCard = ({ review }: { review: typeof PRODUCT_REVIEWS[0] }) => (
+                <div className="border border-slate-100 rounded-xl p-5 bg-slate-50/40">
+                  {/* Reviewer info row */}
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm shrink-0">
+                        {review.name.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="font-bold text-sm text-slate-900">{review.name}</p>
+                        <div className="flex items-center gap-1 my-0.5">{renderStars(review.rating)}</div>
+                        <p className="text-[11px] font-bold text-slate-500">Rated {String(review.rating).padStart(2,"0")} out of 05</p>
+                      </div>
+                    </div>
+                    <span className="text-xs text-slate-400 shrink-0">{review.date}</span>
+                  </div>
+
+                  {/* Badges */}
+                  <div className="flex flex-wrap gap-1.5 mb-3">
+                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                      ✓ Verified Purchase from {review.storeType}
+                    </span>
+                    <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">
+                      Joined {review.memberSince}
+                    </span>
+                    <span className="text-[10px] font-semibold text-violet-700 bg-violet-50 border border-violet-200 px-2 py-0.5 rounded-full">
+                      {review.purchases} items bought so far
+                    </span>
+                  </div>
+
+                  {/* Review text */}
+                  <p className="text-sm text-slate-700 leading-relaxed mb-3">{review.text}</p>
+
+                  {/* Photo thumbnails */}
+                  {review.images.length > 0 && (
+                    <div className="flex gap-2 mb-3 flex-wrap">
+                      {review.images.map((img, ii) => (
+                        <div key={ii} className="w-16 h-16 rounded-lg overflow-hidden border border-slate-200 bg-slate-100 shrink-0 cursor-pointer hover:opacity-90 transition-opacity">
+                          <img src={img} alt={`Review photo ${ii+1}`} className="w-full h-full object-cover" />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Seller Reply */}
+                  {review.sellerReply && (
+                    <div className="mt-3 bg-white border border-primary/15 rounded-lg p-3.5 ml-4 relative">
+                      <div className="absolute -left-3 top-4 w-5 h-5 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center text-[8px] font-black text-primary">↳</div>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="text-[11px] font-black text-primary uppercase tracking-wide">Reply from {review.sellerReply.from}</span>
+                        <span className="text-[10px] text-slate-400">{review.sellerReply.date}</span>
+                      </div>
+                      <p className="text-[12px] text-slate-600 leading-relaxed">{review.sellerReply.text}</p>
+                    </div>
+                  )}
+                </div>
+              );
+
+              return (
+                <div className="bg-white border border-slate-200 rounded-xl mt-4 overflow-hidden">
+                  <Tabs defaultValue="reviews" className="w-full">
+                    <TabsList className="w-full justify-start rounded-none border-b border-slate-200 bg-slate-50 h-auto p-0">
+                      <TabsTrigger value="reviews" className="rounded-none py-4 px-8 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:shadow-none font-bold text-slate-600 data-[state=active]:text-primary">Reviews</TabsTrigger>
+                      <TabsTrigger value="desc" className="rounded-none py-4 px-8 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:shadow-none font-bold text-slate-600 data-[state=active]:text-primary">Description</TabsTrigger>
+                      <TabsTrigger value="specs" className="rounded-none py-4 px-8 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:shadow-none font-bold text-slate-600 data-[state=active]:text-primary">Specifications</TabsTrigger>
+                      <TabsTrigger value="qa" className="rounded-none py-4 px-8 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:shadow-none font-bold text-slate-600 data-[state=active]:text-primary">Questions & Answers</TabsTrigger>
+                    </TabsList>
+                    <div className="p-8">
+
+                      {/* ── REVIEWS TAB ── */}
+                      <TabsContent value="reviews" className="mt-0">
+
+                        {/* Rating summary */}
+                        <div className="flex items-center gap-10 mb-6 pb-6 border-b border-slate-100">
+                          <div className="text-center shrink-0">
+                            <p className="font-heading font-black text-5xl text-slate-900">4.6</p>
+                            <div className="flex items-center justify-center gap-0.5 my-2">{renderStars(5, "w-4 h-4")}</div>
+                            <p className="text-xs text-slate-500 font-semibold">{TOTAL_REVIEWS} reviews</p>
+                          </div>
+                          <div className="flex-1 space-y-1.5">
+                            {REVIEW_RATINGS.map(r => (
+                              <div key={r.stars} className="flex items-center gap-3">
+                                <span className="text-xs font-bold text-slate-600 w-4 text-right">{r.stars}</span>
+                                <Star className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" />
+                                <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                  <div className="h-full bg-amber-400 rounded-full transition-all" style={{ width: `${Math.round(r.count / TOTAL_REVIEWS * 100)}%` }} />
+                                </div>
+                                <span className="text-xs font-bold text-slate-500 w-7 text-right">{r.count}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Sub-tab toggle */}
+                        <div className="flex gap-2 mb-6">
+                          {(["product", "seller"] as const).map(tab => (
+                            <button
+                              key={tab}
+                              onClick={() => setReviewSubTab(tab)}
+                              className={`px-4 py-2 rounded-full text-sm font-bold border transition-all ${
+                                reviewSubTab === tab
+                                  ? "bg-primary text-white border-primary shadow-sm"
+                                  : "bg-white text-slate-600 border-slate-200 hover:border-primary/40"
+                              }`}
+                            >
+                              {tab === "product" ? `Reviews On This Product (${TOTAL_REVIEWS})` : `Reviews On This Seller (${SELLER_REVIEWS.length})`}
+                            </button>
                           ))}
                         </div>
-                        <p className="text-xs text-slate-500 font-semibold">128 reviews</p>
-                      </div>
-                      <div className="flex-1 space-y-2">
-                        {[{ stars: 5, count: 74 }, { stars: 4, count: 31 }, { stars: 3, count: 14 }, { stars: 2, count: 6 }, { stars: 1, count: 3 }].map(r => (
-                          <div key={r.stars} className="flex items-center gap-3">
-                            <span className="text-xs font-semibold text-slate-500 w-4 text-right">{r.stars}</span>
-                            <Star className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" />
-                            <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-                              <div className="h-full bg-amber-400 rounded-full" style={{ width: `${Math.round(r.count / 128 * 100)}%` }} />
-                            </div>
-                            <span className="text-xs text-slate-400 w-6">{r.count}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="space-y-6">
-                      {[
-                        { name: "Rahim Uddin", rating: 5, date: "Feb 12, 2025", text: "Excellent product! The cooling is very fast and it's super quiet. Installation was smooth and the free installation service was great. Highly recommend!", verified: true },
-                        { name: "Kamal Hossain", rating: 4, date: "Jan 28, 2025", text: "Good air conditioner, very energy efficient. The inverter technology really does save electricity. Only minor complaint is the remote control could be better designed.", verified: true },
-                        { name: "Sumaiya Begum", rating: 5, date: "Jan 15, 2025", text: "Best AC I've ever bought! Running for 2 months now without any issue. The auto-clean function is a bonus. Delivery was fast and packaging was excellent.", verified: false },
-                      ].map((review, i) => (
-                        <div key={i} className="border-b border-slate-100 pb-6 last:border-0 last:pb-0">
-                          <div className="flex items-start justify-between mb-2">
-                            <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm shrink-0">
-                                {review.name.charAt(0)}
-                              </div>
-                              <div>
-                                <div className="flex items-center gap-2">
-                                  <span className="font-bold text-sm text-slate-900">{review.name}</span>
-                                  {review.verified && (
-                                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">Verified Purchase</span>
-                                  )}
-                                </div>
-                                <div className="flex items-center gap-1 mt-0.5">
-                                  {[1,2,3,4,5].map(s => (
-                                    <Star key={s} className={`w-3 h-3 ${s <= review.rating ? "fill-amber-400 text-amber-400" : "text-slate-200"}`} />
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
-                            <span className="text-xs text-slate-400">{review.date}</span>
-                          </div>
-                          <p className="text-sm text-slate-600 leading-relaxed">{review.text}</p>
+
+                        {/* Review list */}
+                        <div className="space-y-4">
+                          {(reviewSubTab === "product" ? PRODUCT_REVIEWS : SELLER_REVIEWS).map((review, i) => (
+                            <ReviewCard key={i} review={review} />
+                          ))}
                         </div>
-                      ))}
-                    </div>
-                  </TabsContent>
 
-                  <TabsContent value="desc" className="text-slate-600 text-sm leading-relaxed mt-0">
-                    <p className="mb-4">This intelligent inverter split air conditioner from SAFE provides optimal cooling while ensuring energy efficiency. Designed for modern homes, it features advanced air purification filters and a whisper-quiet operation mode.</p>
-                    <div className="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
-                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Sold by: {active.name}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {active.facilities.map((f, i) => {
-                          const FIcon = f.icon;
-                          return (
-                            <span key={i} className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full border ${f.color}`}>
-                              <FIcon className="w-3 h-3" /> {f.label}
-                            </span>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="specs" className="mt-0">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
-                      {Object.entries(product.specs).map(([key, value]) => (
-                        <div key={key} className="flex justify-between py-3 border-b border-slate-100 last:border-0 md:last:border-b md:[&:nth-last-child(2)]:border-0">
-                          <span className="text-sm font-semibold text-slate-500">{key}</span>
-                          <span className="text-sm font-bold text-slate-900 text-right">{value}</span>
+                        {/* Load More */}
+                        <div className="mt-8 flex justify-center">
+                          <Button variant="outline" className="px-10 font-bold border-slate-300 text-slate-700 hover:border-primary hover:text-primary">
+                            Load More Reviews
+                          </Button>
                         </div>
-                      ))}
-                    </div>
-                  </TabsContent>
+                      </TabsContent>
 
-                  <TabsContent value="qa" className="text-slate-600 text-sm mt-0">
-                    No questions asked yet. Be the first to ask!
-                  </TabsContent>
+                      {/* ── DESCRIPTION TAB ── */}
+                      <TabsContent value="desc" className="text-slate-600 text-sm leading-relaxed mt-0">
+                        <p className="mb-4">This intelligent inverter split air conditioner from SAFE provides optimal cooling while ensuring energy efficiency. Designed for modern homes, it features advanced air purification filters and a whisper-quiet operation mode.</p>
+                        <div className="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Sold by: {active.name}</p>
+                          <div className="flex flex-wrap gap-2">
+                            {active.facilities.map((f, i) => {
+                              const FIcon = f.icon;
+                              return (
+                                <span key={i} className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full border ${f.color}`}>
+                                  <FIcon className="w-3 h-3" /> {f.label}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </TabsContent>
+
+                      {/* ── SPECIFICATIONS TAB ── */}
+                      <TabsContent value="specs" className="mt-0">
+                        {/* Section 1: Product Specifications */}
+                        <div className="mb-8">
+                          <h3 className="font-heading font-bold text-base text-slate-900 mb-4 flex items-center gap-2">
+                            <span className="w-1 h-5 bg-primary rounded-full inline-block" />
+                            Product Specifications
+                          </h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-0 gap-x-12">
+                            {Object.entries(product.specs).map(([key, value], i) => (
+                              <div key={key} className={`flex justify-between py-3 border-b border-slate-100 ${i % 2 === 0 ? "bg-slate-50/50" : ""} px-2 rounded`}>
+                                <span className="text-sm font-semibold text-slate-500">{key}</span>
+                                <span className="text-sm font-bold text-slate-900 text-right">{value}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Section 2: Seller Dependent Specifications */}
+                        <div>
+                          <h3 className="font-heading font-bold text-base text-slate-900 mb-4 flex items-center gap-2">
+                            <span className="w-1 h-5 bg-amber-400 rounded-full inline-block" />
+                            Seller Dependent Specifications
+                          </h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-0 gap-x-12">
+                            {[
+                              ["Warranty Coverage", active.shopInfo.returnPolicy.split(".")[0]],
+                              ["Installation", active.facilities.some((f: {label: string}) => f.label === "Free Installation") ? "Free Installation Included" : "Charges applicable"],
+                              ["Return Policy", `${active.shopInfo.returnPolicy.split(".")[0]}`],
+                              ["After-sales Support", active.shopInfo.responseTime],
+                              ["Shipping Area", "Inside & Outside Dhaka"],
+                              ["Founded", active.shopInfo.founded],
+                            ].map(([key, value], i) => (
+                              <div key={key} className={`flex justify-between py-3 border-b border-slate-100 ${i % 2 === 0 ? "bg-amber-50/30" : ""} px-2 rounded`}>
+                                <span className="text-sm font-semibold text-slate-500">{key}</span>
+                                <span className="text-sm font-bold text-slate-900 text-right max-w-[55%]">{value}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </TabsContent>
+
+                      {/* ── Q&A TAB ── */}
+                      <TabsContent value="qa" className="mt-0">
+                        <div className="space-y-6">
+                          {QA_ITEMS.map((item, i) => (
+                            <div key={i} className="border border-slate-100 rounded-xl overflow-hidden">
+                              {/* Question */}
+                              <div className="bg-slate-50 p-4">
+                                <div className="flex items-start gap-3">
+                                  <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm shrink-0">
+                                    {item.asker.charAt(0)}
+                                  </div>
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                                      <span className="font-bold text-sm text-slate-900">{item.asker}</span>
+                                      <span className="text-[10px] text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-full">
+                                        {item.purchaseCount} verified purchase{item.purchaseCount !== 1 ? "s" : ""} since {item.memberSince}
+                                      </span>
+                                    </div>
+                                    <p className="text-[11px] font-semibold text-slate-500 mb-2">
+                                      asked a{" "}
+                                      {item.type === "general"
+                                        ? <span className="text-primary font-bold">General Question</span>
+                                        : <span>Question to <span className="text-amber-600 font-bold">{(item as typeof item & { targetSeller: string }).targetSeller}</span></span>
+                                      }
+                                    </p>
+                                    <p className="text-sm text-slate-800 font-medium leading-relaxed">{item.question}</p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Replies */}
+                              {item.replies.map((reply, ri) => (
+                                <div key={ri} className="border-t border-slate-100 p-4 bg-white">
+                                  <div className="flex items-start gap-3">
+                                    <div className={`w-7 h-7 rounded-full ${reply.color} flex items-center justify-center font-black text-white text-[11px] shrink-0`}>
+                                      {reply.avatar}
+                                    </div>
+                                    <div>
+                                      <p className="text-[11px] font-black text-slate-700 mb-1">
+                                        Replied by <span className={reply.from === "Electropia" ? "text-primary" : "text-amber-600"}>{reply.from}:</span>
+                                      </p>
+                                      <p className="text-sm text-slate-600 leading-relaxed">{reply.text}</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="mt-6 p-4 bg-slate-50 border border-dashed border-slate-300 rounded-xl text-center">
+                          <p className="text-sm text-slate-500 mb-3">Have a question about this product?</p>
+                          <Button className="bg-primary hover:bg-primary/90 text-white font-bold">Ask a Question</Button>
+                        </div>
+                      </TabsContent>
+
+                    </div>
+                  </Tabs>
                 </div>
-              </Tabs>
-            </div>
+              );
+            })()}
           </>
         );
       })()}
