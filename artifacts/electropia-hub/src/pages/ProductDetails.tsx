@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Star, Heart, Share2, ShieldCheck, MapPin, ChevronRight, CheckCircle2, Users, Clock, AlertCircle, Truck, Package, Wrench, RotateCcw, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +18,33 @@ export default function ProductDetails() {
   const [dealQtys, setDealQtys] = useState([1, 1, 1]);
   const [sellerAddons, setSellerAddons] = useState<(number | null)[]>([null, null, null, null]);
   const [reviewSubTab, setReviewSubTab] = useState<"product" | "seller">("product");
+
+  const HASH_TO_TAB: Record<string, string> = {
+    "#reviews": "reviews",
+    "#description": "desc",
+    "#specifications": "specs",
+    "#questions": "qa",
+  };
+  const TAB_TO_HASH: Record<string, string> = {
+    reviews: "#reviews",
+    desc: "#description",
+    specs: "#specifications",
+    qa: "#questions",
+  };
+
+  const getTabFromHash = () => HASH_TO_TAB[window.location.hash] ?? "reviews";
+  const [activeTab, setActiveTab] = useState(getTabFromHash);
+
+  useEffect(() => {
+    const onHashChange = () => setActiveTab(getTabFromHash());
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    history.replaceState(null, "", window.location.pathname + window.location.search + TAB_TO_HASH[tab]);
+  };
 
   const ADDONS = [
     { label: "Installation Only", price: 500 },
@@ -943,7 +970,7 @@ export default function ProductDetails() {
 
               return (
                 <div className="bg-white border border-slate-200 rounded-xl mt-4 overflow-hidden">
-                  <Tabs defaultValue="reviews" className="w-full">
+                  <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                     <TabsList className="w-full justify-start rounded-none border-b border-slate-200 bg-slate-50 h-auto p-0">
                       <TabsTrigger value="reviews" className="rounded-none py-4 px-8 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:shadow-none font-bold text-slate-600 data-[state=active]:text-primary">Reviews</TabsTrigger>
                       <TabsTrigger value="desc" className="rounded-none py-4 px-8 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:shadow-none font-bold text-slate-600 data-[state=active]:text-primary">Description</TabsTrigger>
