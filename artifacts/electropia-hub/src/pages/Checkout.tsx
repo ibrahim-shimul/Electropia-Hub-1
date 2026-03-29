@@ -553,78 +553,81 @@ export default function Checkout() {
                 <div className="text-[13px] mb-2">
 
                   {/* Regular price + discount lines */}
-                  <div className="space-y-2.5">
-                    <div className="flex justify-between text-slate-600">
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-slate-700">
                       <span>Regular Price <span className="text-slate-400 text-[11px]">(06 items)</span></span>
-                      <span className="font-medium text-slate-900 tabular-nums">: ৳47,370</span>
+                      <span className="font-medium text-slate-900 tabular-nums">: ৳ 47,370</span>
                     </div>
-                    <div className="flex justify-between text-rose-500">
+                    <div className="flex justify-between text-slate-600">
                       <span>Discount (Promo BOOM30)</span>
-                      <span className="tabular-nums">: -৳300</span>
+                      <span className="tabular-nums text-slate-700">: -৳ 300</span>
                     </div>
-                    <div className="flex justify-between text-rose-500">
+                    <div className="flex justify-between text-slate-600">
                       <span>Discount (Refferal 2254152)</span>
-                      <span className="tabular-nums">: -৳300</span>
+                      <span className="tabular-nums text-slate-700">: -৳ 300</span>
                     </div>
-                    <div className="flex justify-between text-rose-500">
+                    <div className="flex justify-between text-slate-600">
                       <span>Discount (5% Off Visa Card)</span>
-                      <span className="tabular-nums">: -৳500</span>
+                      <span className="tabular-nums text-slate-700">: -৳ 500</span>
                     </div>
-                    <div className="flex justify-between text-rose-500">
+                    <div className="flex justify-between text-slate-600">
                       <span>Discount (1% dis on Adv Pay)</span>
-                      <span className="tabular-nums">: -৳300</span>
+                      <span className="tabular-nums text-slate-700">: -৳ 300</span>
                     </div>
                   </div>
 
                   {/* Checkout Lowest */}
-                  <div className="flex justify-between items-center mt-3 pt-3 border-t border-slate-200">
+                  <div className="flex justify-between items-center mt-3 pt-2.5 border-t border-slate-200">
                     <span className="font-bold text-slate-900">Checkout Lowest</span>
-                    <span className="font-bold text-slate-900 tabular-nums">:-৳45,970/-</span>
+                    <span className="font-bold text-slate-900 tabular-nums">: ৳ 45,970/-</span>
                   </div>
 
                   {/* Wallet + Sub Total block */}
-                  <div className="mt-3 pt-3 border-t border-slate-200 space-y-2.5">
+                  <div className="mt-3 pt-2.5 border-t border-slate-200 space-y-2">
                     <div className="flex justify-between text-slate-600">
                       <span>Paid by Wallet Balance:</span>
-                      <span className="font-medium text-slate-900 tabular-nums">: ৳1500</span>
+                      <span className="font-medium text-slate-900 tabular-nums">: ৳ 1500</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="font-bold text-slate-900">Sub Total</span>
-                      <span className="font-bold text-slate-900 tabular-nums">: ৳44,470/-</span>
+                      <span className="font-bold text-slate-900 tabular-nums">: ৳ 44,470/-</span>
                     </div>
                   </div>
 
                   {/* Fees + Shipping block */}
-                  <div className="mt-3 pt-3 border-t border-slate-200 space-y-2.5">
+                  <div className="mt-3 pt-2.5 border-t border-slate-200 space-y-2">
                     {selectedPayment === 'emi' && (
                       <div className="flex justify-between text-slate-600">
-                        <span className="leading-snug">EMI Convenience Fee<br/><span className="text-[11px] text-slate-400">(The City Bank, 36M @16%)</span></span>
-                        <span className="font-medium text-slate-900 tabular-nums shrink-0 ml-2">: ৳7484</span>
+                        <span className="leading-snug">
+                          EMI Convenience Fee<br/>
+                          <span className="text-[11px] text-slate-500">(The City Bank, 36M @16%)</span>
+                        </span>
+                        <span className="font-medium text-slate-900 tabular-nums shrink-0 ml-2">: ৳ 7,484</span>
                       </div>
                     )}
-                    {(selectedPayment === 'full') && (
+                    {selectedPayment === 'full' && (
                       <div className="flex justify-between text-slate-600">
                         <span>SSLCOMMERZ Gateway Charge (1.5%)</span>
-                        <span className="font-medium text-slate-900 tabular-nums">: ৳802</span>
+                        <span className="font-medium text-slate-900 tabular-nums">: ৳ 802</span>
                       </div>
                     )}
                     <div className="flex justify-between text-slate-600">
                       <span>Shipping</span>
-                      <span className="font-medium text-slate-900 tabular-nums">: ৳200</span>
+                      <span className="font-medium text-slate-900 tabular-nums">: ৳ 200</span>
                     </div>
                   </div>
 
                   {/* Payable Total */}
-                  <div className="flex justify-between items-center mt-3 pt-3 border-t border-slate-200">
-                    <span className="font-bold text-slate-900 uppercase tracking-wide">Payable Total</span>
+                  <div className="flex justify-between items-center mt-3 pt-2.5 border-t-2 border-slate-300">
+                    <span className="font-extrabold text-slate-900 uppercase tracking-wide text-sm">Payable Total</span>
                     <span className="font-heading font-black text-[#6c2bd9] text-lg tabular-nums">
-                      : ৳{selectedPayment === 'emi' ? '52,956' : selectedPayment === 'full' ? '45,472' : '44,670'}
+                      : ৳ {selectedPayment === 'emi' ? '52,956' : selectedPayment === 'full' ? '45,472' : '44,670'}
                     </span>
                   </div>
                 </div>
 
                 {/* Footnote */}
-                <p className="text-[10px] text-slate-400 italic leading-relaxed mb-4">
+                <p className="text-[11px] text-slate-500 leading-relaxed mt-4 mb-4">
                   *All discounts are subject to proper use of promo codes and methods fulfilling eligibility.
                 </p>
 
