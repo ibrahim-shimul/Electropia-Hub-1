@@ -566,10 +566,7 @@ export default function Cart() {
             }))}
             productTotal={multiProductTotal}
             shippingTotal={multiShipping}
-            appliedDiscount={appliedDiscount}
-            payableTotal={multiPayable}
-            promoCode={promoCode}
-            setPromoCode={setPromoCode}
+            itemCount={multiSelectedStores.reduce((a, s) => a + s.selectedItems.length, 0)}
             onCheckout={() => setLocation("/checkout")}
           />
         </div>
@@ -695,10 +692,7 @@ export default function Cart() {
             }]}
             productTotal={singleProductTotal}
             shippingTotal={singleStore.shippingCharge}
-            appliedDiscount={appliedDiscount}
-            payableTotal={singlePayable}
-            promoCode={promoCode}
-            setPromoCode={setPromoCode}
+            itemCount={singleNormalSelected.length + singleGdSelected.length}
             onCheckout={() => setLocation("/checkout")}
             groupDealNote={singleGdSelected.length > 0}
           />
@@ -713,101 +707,160 @@ function CartTotalsSidebar({
   storeBreakdowns,
   productTotal,
   shippingTotal,
-  appliedDiscount,
-  payableTotal,
-  promoCode,
-  setPromoCode,
+  itemCount,
   onCheckout,
   groupDealNote = false,
 }: {
   storeBreakdowns: { storeName: string; rating: number; reviews: number; address: string; shippingCharge: number; subtotal: number }[];
   productTotal: number;
   shippingTotal: number;
-  appliedDiscount: number;
-  payableTotal: number;
-  promoCode: string;
-  setPromoCode: (v: string) => void;
+  itemCount: number;
   onCheckout: () => void;
   groupDealNote?: boolean;
 }) {
+  const [promoCode, setPromoCode] = useState("");
+  const [referralCode, setReferralCode] = useState("");
+
+  // ── Fixed discount lines (mock values per design spec) ──
+  const discountPromo    = 300;
+  const discountReferral = 300;
+  const discountVisa     = Math.min(Math.round(productTotal * 0.05), 1500);
+  const discountAdvPay   = Math.round(productTotal * 0.01);
+  const totalDiscounts   = discountPromo + discountReferral + discountVisa + discountAdvPay;
+  const checkoutLowest   = productTotal - totalDiscounts;
+
+  const itemLabel = String(itemCount).padStart(2, "0");
+
   return (
     <div className="lg:col-span-4">
-      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm sticky top-24">
-        <h2 className="font-heading font-extrabold text-xl text-slate-900 mb-1">Cart Totals</h2>
-        <p className="text-xs text-slate-500 mb-6">{storeBreakdowns.reduce((a, s) => a, 0)} selected items</p>
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm sticky top-24 overflow-hidden">
 
-        <div className="space-y-6 mb-6">
+        {/* Header */}
+        <div className="px-6 pt-5 pb-4 border-b border-slate-100">
+          <h2 className="font-heading font-extrabold text-xl text-slate-900">Cart Totals</h2>
+          <p className="text-xs text-slate-500 mt-0.5">{itemCount} item{itemCount !== 1 ? "s" : ""} selected</p>
+        </div>
+
+        {/* Shipping address per store */}
+        <div className="px-6 py-4 border-b border-slate-100 space-y-3">
           {storeBreakdowns.map((store, i) => (
-            <div key={i} className="border-b border-slate-100 pb-5 last:border-0 last:pb-0">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="font-bold text-sm text-slate-800">{store.storeName}</span>
-                <span className="text-amber-500 text-[10px] font-bold">★ {store.rating} ({store.reviews})</span>
+            <div key={i} className="bg-slate-50 rounded-lg p-3 border border-slate-100">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="font-bold text-[12px] text-slate-800">{store.storeName}</span>
+                <span className="text-amber-500 text-[10px] font-bold">★ {store.rating}</span>
               </div>
-              <div className="bg-slate-50 p-3 rounded-lg mb-3 border border-slate-100">
-                <p className="text-[11px] text-slate-600 mb-2 leading-relaxed">
-                  <span className="font-semibold text-slate-700">Ships to:</span> {store.address}
-                </p>
-                <button className="text-rose-500 text-xs font-bold hover:underline">Edit/Change Address</button>
-              </div>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between text-slate-500">
-                  <span>Product Price</span>
-                  <span>Tk {store.subtotal.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between text-slate-500">
-                  <span>Shipping Charge</span>
-                  <span>Tk {store.shippingCharge.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between font-bold text-slate-900 pt-1">
-                  <span>Subtotal</span>
-                  <span>Tk {(store.subtotal + store.shippingCharge).toLocaleString()}</span>
-                </div>
-              </div>
+              <p className="text-[11px] text-slate-500 leading-relaxed mb-1.5">
+                <span className="font-semibold text-slate-600">Ships to: </span>{store.address}
+              </p>
+              <button className="text-rose-500 text-[11px] font-bold hover:underline">Edit / Change Address</button>
             </div>
           ))}
         </div>
 
-        <div className="flex justify-between font-black text-slate-900 text-lg py-4 border-y border-slate-200 mb-6">
-          <span>Subtotal</span>
-          <span>Tk {(productTotal + shippingTotal).toLocaleString()}</span>
-        </div>
-
-        {/* Promo Code */}
-        <div className="mb-6">
-          <label className="block text-xs font-bold text-slate-700 mb-2">Promo / Referral Code</label>
-          <div className="flex gap-2">
-            <Input value={promoCode} onChange={(e) => setPromoCode(e.target.value)} placeholder="Enter promo code" className="bg-slate-50 focus-visible:ring-[#6c2bd9]/20" />
-            <Button variant="outline" className="border-slate-300 font-bold px-6">Apply</Button>
-          </div>
-          {appliedDiscount > 0 && (
-            <div className="flex justify-between items-center mt-3 text-sm font-bold text-emerald-600">
-              <span>Applied Discount (BOOM30)</span>
-              <span>(-) Tk {appliedDiscount.toLocaleString()}</span>
+        {/* Promo + Referral inputs */}
+        <div className="px-6 py-4 border-b border-slate-100 space-y-3">
+          <div>
+            <label className="block text-[11px] font-bold text-slate-600 mb-1.5">Promo Code</label>
+            <div className="flex gap-2">
+              <Input value={promoCode} onChange={(e) => setPromoCode(e.target.value)} placeholder="e.g. BOOM30" className="h-9 text-sm bg-slate-50 focus-visible:ring-[#6c2bd9]/20" />
+              <Button variant="outline" className="h-9 border-slate-300 font-bold px-4 text-sm shrink-0">Apply</Button>
             </div>
-          )}
+          </div>
+          <div>
+            <label className="block text-[11px] font-bold text-slate-600 mb-1.5">Referral Code</label>
+            <div className="flex gap-2">
+              <Input value={referralCode} onChange={(e) => setReferralCode(e.target.value)} placeholder="e.g. 2254152" className="h-9 text-sm bg-slate-50 focus-visible:ring-[#6c2bd9]/20" />
+              <Button variant="outline" className="h-9 border-slate-300 font-bold px-4 text-sm shrink-0">Apply</Button>
+            </div>
+          </div>
         </div>
 
-        {/* Grand Total */}
-        <div className="bg-slate-50 rounded-xl p-5 text-center mb-4 border border-slate-100">
-          <p className="text-sm font-bold text-slate-600 mb-1">Payable Total</p>
-          <h3 className="font-heading font-black text-3xl text-slate-900 mb-1">TK. {Math.max(0, payableTotal).toLocaleString()}</h3>
-          <p className="text-[10px] text-slate-500 uppercase tracking-wide">(Including all charges & discounts)</p>
+        {/* Pricing breakdown */}
+        <div className="px-6 py-4 space-y-2.5 border-b border-slate-200">
+
+          {/* Regular Price */}
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-slate-600 font-medium">
+              Regular Price <span className="text-slate-400 font-normal">({itemLabel} items)</span>
+            </span>
+            <span className="font-bold text-slate-900">৳ {productTotal.toLocaleString()}</span>
+          </div>
+
+          {/* Discount lines */}
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-slate-500">
+              Discount <span className="text-emerald-700 font-semibold">(Promo BOOM30*)</span>
+            </span>
+            <span className="font-bold text-emerald-600">- ৳ {discountPromo.toLocaleString()}</span>
+          </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-slate-500">
+              Discount <span className="text-emerald-700 font-semibold">(Referral 2254152)</span>
+            </span>
+            <span className="font-bold text-emerald-600">- ৳ {discountReferral.toLocaleString()}</span>
+          </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-slate-500 leading-snug">
+              Discount <span className="text-emerald-700 font-semibold">(5% Off* Visa Card, upto ৳ 1,500)</span>
+            </span>
+            <span className="font-bold text-emerald-600 shrink-0 ml-2">- ৳ {discountVisa.toLocaleString()}</span>
+          </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-slate-500">
+              Discount <span className="text-emerald-700 font-semibold">(1% Dis on Adv Pay)</span>
+            </span>
+            <span className="font-bold text-emerald-600">- ৳ {discountAdvPay.toLocaleString()}</span>
+          </div>
+
+          {/* Divider line */}
+          <div className="border-t border-dashed border-slate-200 pt-2.5 mt-1">
+            <div className="flex items-center justify-between">
+              <span className="font-extrabold text-slate-900 text-sm">Checkout Lowest</span>
+              <span className="font-black text-[#6c2bd9] text-base">৳ {checkoutLowest.toLocaleString()}/-</span>
+            </div>
+          </div>
         </div>
 
+        {/* Shipping */}
+        <div className="px-6 py-3 border-b border-slate-100">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-slate-500">Shipping Charge</span>
+            <span className="font-bold text-slate-800">+ ৳ {shippingTotal.toLocaleString()}</span>
+          </div>
+        </div>
+
+        {/* Footnotes */}
+        <div className="px-6 py-3 border-b border-slate-200 space-y-1">
+          <p className="text-[10px] text-slate-400 leading-relaxed">
+            <span className="font-bold text-slate-500">*</span> Single Use Only
+          </p>
+          <p className="text-[10px] text-slate-400 leading-relaxed">
+            <span className="font-bold text-slate-500">**</span> All discounts are subject to proper use of promo codes and methods fulfilling eligibility.
+          </p>
+        </div>
+
+        {/* Group deal note */}
         {groupDealNote && (
-          <div className="bg-purple-50 border border-purple-100 rounded-lg px-4 py-3 text-[11px] text-purple-800 mb-4 font-semibold">
-            🔥 Group deal deposits will be charged now. Remaining payment is due after the deal reaches its target.
+          <div className="px-6 py-3 border-b border-slate-200">
+            <div className="bg-purple-50 rounded-lg px-3 py-2.5 text-[11px] text-purple-800 font-semibold">
+              🔥 Group deal deposits charged now. Remaining payment due after deal reaches target.
+            </div>
           </div>
         )}
 
-        <div className="flex flex-col gap-3">
+        {/* Actions */}
+        <div className="px-6 py-5 flex flex-col gap-3">
           <Button onClick={onCheckout} className="w-full bg-[#6c2bd9] hover:bg-[#5821b0] text-white font-bold h-12 text-base shadow-lg shadow-purple-500/20">
             Proceed to Checkout
           </Button>
-          <Button variant="ghost" className="w-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 h-12">
+          <Button variant="ghost" className="w-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 h-10 text-sm">
             Continue Shopping
           </Button>
         </div>
+
       </div>
     </div>
   );
