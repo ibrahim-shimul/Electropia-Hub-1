@@ -5,7 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Link, useLocation } from "wouter";
+import { Link, useLocation, useRoute } from "wouter";
 
 // ─── MULTI-SHOP DATA ─────────────────────────────────────────────────────────
 const MULTI_SHOP_CART_INITIAL = [
@@ -297,7 +297,8 @@ function GroupDealItemRow({
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 export default function Cart() {
   const [, setLocation] = useLocation();
-  const [cartVersion, setCartVersion] = useState<"multi" | "single">("multi");
+  const [, params] = useRoute("/cart/:version");
+  const cartVersion: "multi" | "single" = params?.version === "single" ? "single" : "multi";
 
   // Multi-shop state
   const [multiCart, setMultiCart] = useState(MULTI_SHOP_CART_INITIAL);
@@ -401,28 +402,30 @@ export default function Cart() {
 
         {/* Version Switcher */}
         <div className="flex items-center gap-1 bg-slate-100 rounded-xl p-1">
-          <button
-            onClick={() => setCartVersion("multi")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${
-              cartVersion === "multi"
-                ? "bg-white text-[#6c2bd9] shadow-sm border border-slate-200"
-                : "text-slate-500 hover:text-slate-700"
-            }`}
-          >
-            <Layers className="w-4 h-4" />
-            Multi-Shop Cart
-          </button>
-          <button
-            onClick={() => setCartVersion("single")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${
-              cartVersion === "single"
-                ? "bg-white text-[#6c2bd9] shadow-sm border border-slate-200"
-                : "text-slate-500 hover:text-slate-700"
-            }`}
-          >
-            <Store className="w-4 h-4" />
-            Single-Shop Cart
-          </button>
+          <Link href="/cart/multi">
+            <button
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                cartVersion === "multi"
+                  ? "bg-white text-[#6c2bd9] shadow-sm border border-slate-200"
+                  : "text-slate-500 hover:text-slate-700"
+              }`}
+            >
+              <Layers className="w-4 h-4" />
+              Multi-Shop Cart
+            </button>
+          </Link>
+          <Link href="/cart/single">
+            <button
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                cartVersion === "single"
+                  ? "bg-white text-[#6c2bd9] shadow-sm border border-slate-200"
+                  : "text-slate-500 hover:text-slate-700"
+              }`}
+            >
+              <Store className="w-4 h-4" />
+              Single-Shop Cart
+            </button>
+          </Link>
         </div>
       </div>
 
