@@ -10,8 +10,7 @@ import { MOCK_PRODUCTS } from "@/lib/mock-data";
 export default function ProductDetails() {
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
-  const [hasJoinedGroup, setHasJoinedGroup] = useState(false);
-  const [groupCurrent, setGroupCurrent] = useState(32);
+  const [groupCurrent] = useState(32);
   const [selectedSeller, setSelectedSeller] = useState(0);
   const [selectedColor, setSelectedColor] = useState("White");
   const [selectedCapacity, setSelectedCapacity] = useState("1.5 Ton");
@@ -99,23 +98,6 @@ export default function ProductDetails() {
 
   const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
 
-  // Group Deal calculations
-  const groupDealProgress = (product.groupDeal.currentCustomers / product.groupDeal.targetCustomers) * 100;
-  const customersNeeded = product.groupDeal.targetCustomers - product.groupDeal.currentCustomers;
-  const isGroupDealComplete = product.groupDeal.currentCustomers >= product.groupDeal.targetCustomers;
-
-  const handleJoinDeal = () => {
-    if (!hasJoinedGroup && !isGroupDealComplete) {
-      setHasJoinedGroup(true);
-      setGroupCurrent(prev => prev + 1);
-    }
-  };
-
-  // Bulk Price calculation based on current quantity
-  const currentBulkTier = product.bulkPricing.find(
-    tier => quantity >= tier.minQty && (tier.maxQty === null || quantity <= tier.maxQty)
-  );
-  const currentPrice = currentBulkTier ? currentBulkTier.price : product.price;
 
 
   return (
@@ -177,13 +159,50 @@ export default function ProductDetails() {
                 {product.soldLast7Days} items sold in last 7 days
               </span>
             </div>
-            <div className="font-bold text-slate-800 text-lg mb-5">
+            <div className="font-bold text-slate-800 text-base mb-4">
               {product.brand}
             </div>
 
-            {/* Variant Selector */}
-            <div className="flex flex-col gap-4 mb-5 pb-5 border-b border-slate-100">
-              {/* Color */}
+            {/* Product Specifications */}
+            <div className="mb-4">
+              <h3 className="text-xs font-extrabold text-slate-700 uppercase tracking-wide mb-2">Product Specifications</h3>
+              <table className="w-full text-sm border border-slate-200 rounded-lg overflow-hidden">
+                <tbody>
+                  {Object.entries(product.specs).map(([key, val], i) => (
+                    <tr key={key} className={i % 2 === 0 ? "bg-slate-50" : "bg-white"}>
+                      <td className="px-3 py-2 font-semibold text-slate-600 w-2/5 border-r border-slate-200">{key}</td>
+                      <td className="px-3 py-2 text-slate-800">{val}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Seller Dependent Specifications */}
+            <div className="mb-4">
+              <h3 className="text-xs font-extrabold text-slate-700 uppercase tracking-wide mb-2">Seller Dependent Specifications</h3>
+              <table className="w-full text-sm border border-slate-200 rounded-lg overflow-hidden">
+                <tbody>
+                  {[
+                    ["After Sale Service", "RCF Guarantee"],
+                    ["Delivery", "Charge Applicable"],
+                    ["Delivery Express Note", "Delivery fee is ৳60+ inside Dhaka, ৳120+ outside Dhaka"],
+                    ["Installation Fee", "Charge Applicable"],
+                    ["Delivery Period", "03 Day(s)"],
+                    ["Accessory Free", "Angle bar, vent"],
+                    ["Distance Fee", "৳100 per KM (beyond standard zone)"],
+                  ].map(([k, v], i) => (
+                    <tr key={k} className={i % 2 === 0 ? "bg-slate-50" : "bg-white"}>
+                      <td className="px-3 py-2 font-semibold text-slate-600 w-2/5 border-r border-slate-200 align-top">{k}</td>
+                      <td className="px-3 py-2 text-slate-800 leading-snug">{v}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Variant Selectors */}
+            <div className="flex flex-col gap-3 mb-4 pb-4 border-b border-slate-100">
               <div className="flex items-center gap-3 flex-wrap">
                 <span className="text-sm font-semibold text-slate-500 w-20 shrink-0">
                   Color: <span className="text-slate-900">{selectedColor}</span>
@@ -208,12 +227,8 @@ export default function ProductDetails() {
                   ))}
                 </div>
               </div>
-
-              {/* Capacity */}
               <div className="flex items-center gap-3 flex-wrap">
-                <span className="text-sm font-semibold text-slate-500 w-20 shrink-0">
-                  Capacity:
-                </span>
+                <span className="text-sm font-semibold text-slate-500 w-20 shrink-0">Capacity:</span>
                 <div className="flex items-center gap-2 flex-wrap">
                   {["1.0 Ton", "1.5 Ton", "2.0 Ton", "2.5 Ton"].map(cap => (
                     <button
@@ -232,7 +247,26 @@ export default function ProductDetails() {
               </div>
             </div>
 
-            <div className="flex items-center gap-6 mb-6">
+            {/* Delivery Info Row */}
+            <div className="flex items-center gap-4 mb-4 text-[12px] text-slate-600">
+              <div className="flex items-center gap-1.5">
+                <Truck className="w-3.5 h-3.5 text-slate-400" />
+                <span>Inside Dhaka: <strong className="text-slate-800">৳60+</strong></span>
+              </div>
+              <div className="w-px h-4 bg-slate-200"></div>
+              <div className="flex items-center gap-1.5">
+                <Truck className="w-3.5 h-3.5 text-slate-400" />
+                <span>Outside Dhaka: <strong className="text-slate-800">৳120+</strong></span>
+              </div>
+              <div className="w-px h-4 bg-slate-200"></div>
+              <div className="flex items-center gap-1.5">
+                <Package className="w-3.5 h-3.5 text-slate-400" />
+                <span>Stock: <strong className="text-slate-800">{product.seller.stock}</strong></span>
+              </div>
+            </div>
+
+            {/* Wishlist / Share */}
+            <div className="flex items-center gap-6 mb-4">
               <button className="flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-primary transition-colors">
                 <Heart className="w-4 h-4" /> Add to wishlist
               </button>
@@ -240,167 +274,52 @@ export default function ProductDetails() {
                 <Share2 className="w-4 h-4" /> Share
               </button>
             </div>
-          </div>
 
-          {/* Group Deal Banner - HIGH PROMINENCE */}
-          {product.groupDeal.active && (
-            <div className="bg-gradient-to-r from-purple-900 to-indigo-800 rounded-xl p-1 shadow-lg relative overflow-hidden">
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-              
-              <div className="bg-white/95 backdrop-blur rounded-lg p-5 relative z-10">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100 border border-purple-200 mb-2 flex items-center gap-1.5 w-fit">
-                      <Users className="w-3.5 h-3.5" /> Active Group Deal
-                    </Badge>
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-heading font-black text-3xl text-purple-700">৳ {product.groupDeal.price.toLocaleString()}</span>
-                      <span className="text-sm text-slate-500 line-through">৳ {product.price.toLocaleString()}</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center justify-end gap-1">
-                      <Clock className="w-3.5 h-3.5" /> Ends In
-                    </p>
-                    <div className="flex gap-1 text-purple-900 font-bold">
-                      <span className="bg-purple-100 px-2 py-1 rounded">14h</span>:
-                      <span className="bg-purple-100 px-2 py-1 rounded">20m</span>:
-                      <span className="bg-purple-100 px-2 py-1 rounded text-rose-600">45s</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-2 mb-4">
-                  <div className="flex justify-between text-xs font-bold">
-                    <span className="text-slate-700">{product.groupDeal.currentCustomers} Joined</span>
-                    <span className="text-purple-700">{customersNeeded} more needed!</span>
-                  </div>
-                  <Progress value={groupDealProgress} className="h-2.5 bg-slate-200 [&>div]:bg-gradient-to-r [&>div]:from-purple-500 [&>div]:to-indigo-500" />
-                </div>
-
-                <div className="flex gap-3">
-                  <Button 
-                    onClick={handleJoinDeal}
-                    disabled={hasJoinedGroup || isGroupDealComplete}
-                    className={`flex-1 font-bold h-12 shadow-md hover:shadow-lg transition-all ${
-                      isGroupDealComplete 
-                        ? "bg-emerald-600 hover:bg-emerald-700 text-white cursor-not-allowed opacity-90"
-                        : hasJoinedGroup
-                          ? "bg-purple-800 text-white border border-purple-500 cursor-not-allowed opacity-90"
-                          : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
-                    }`}
-                  >
-                    {isGroupDealComplete 
-                      ? "Deal Locked! (Target Met)" 
-                      : hasJoinedGroup 
-                        ? `Joined! (Deposit ৳${product.groupDeal.depositRequired} Paid)` 
-                        : `Join Deal (Deposit ৳${product.groupDeal.depositRequired})`}
-                  </Button>
-                  <Button variant="outline" className="h-12 px-4 border-purple-200 text-purple-700 hover:bg-purple-50 font-bold">
-                    <Share2 className="w-4 h-4 mr-2" /> Share
-                  </Button>
-                </div>
-                <p className="text-[10px] text-slate-500 text-center mt-3 flex items-center justify-center gap-1">
-                  <AlertCircle className="w-3 h-3" /> Deposit is fully refunded if the goal is not met.
-                </p>
+            {/* Price block */}
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4">
+              <div className="flex items-baseline gap-3 mb-1">
+                <span className="font-heading font-black text-2xl text-slate-900">৳ {product.price.toLocaleString()}</span>
+                <span className="text-sm text-slate-400 line-through">৳ {product.originalPrice.toLocaleString()}</span>
+                <Badge className="bg-rose-500 hover:bg-rose-500 text-white text-[10px] font-bold px-2">{discount}% OFF</Badge>
               </div>
-            </div>
-          )}
-
-          {/* Regular / Bulk Pricing Section */}
-          <div className="border border-slate-200 rounded-xl p-5 bg-white shadow-sm mt-2">
-            <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
-              Standard & Bulk Purchase <Badge variant="secondary" className="text-[10px]">B2B/B2C</Badge>
-            </h3>
-            
-            {/* Tiered Pricing Table */}
-            <div className="grid grid-cols-3 gap-2 mb-5">
-              {product.bulkPricing.map((tier, idx) => {
-                const isActive = quantity >= tier.minQty && (tier.maxQty === null || quantity <= tier.maxQty);
-                return (
-                  <div key={idx} className={`p-2 rounded-lg border text-center transition-colors ${isActive ? 'border-primary bg-primary/5 shadow-inner' : 'border-slate-100 bg-slate-50'}`}>
-                    <div className={`text-[11px] font-bold mb-1 ${isActive ? 'text-primary' : 'text-slate-500'}`}>
-                      {tier.maxQty ? `${tier.minQty}-${tier.maxQty} Units` : `${tier.minQty}+ Units`}
-                    </div>
-                    <div className={`font-extrabold ${isActive ? 'text-primary text-lg' : 'text-slate-700'}`}>
-                      ৳{(tier.price / 1000).toFixed(1)}k
-                    </div>
-                  </div>
-                );
-              })}
+              <p className="text-[11px] text-emerald-700 font-semibold">
+                You save ৳ {(product.originalPrice - product.price).toLocaleString()} on this item
+              </p>
             </div>
 
-            {/* Pricing Breakdown */}
-            {(() => {
-              const regularPrice   = currentPrice * quantity;
-              const discountPromo    = 300;
-              const discountReferral = 300;
-              const discountVisa     = Math.min(Math.round(regularPrice * 0.05), 1500);
-              const discountAdvPay   = Math.round(regularPrice * 0.01);
-              const checkoutLowest   = regularPrice - discountPromo - discountReferral - discountVisa - discountAdvPay;
-              const itemLabel        = String(quantity).padStart(2, "0");
-              return (
-                <div className="border-y border-slate-100 py-4 mb-5 space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-600 font-medium">
-                      Regular Price <span className="text-slate-400 font-normal">({itemLabel} item{quantity !== 1 ? "s" : ""})</span>
-                    </span>
-                    <span className="font-bold text-slate-900">৳ {regularPrice.toLocaleString()}</span>
-                  </div>
-                  {quantity > 1 && (
-                    <div className="text-[10px] text-emerald-600 font-bold text-right -mt-1">Bulk discount applied!</div>
-                  )}
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">Discount <span className="text-emerald-700 font-semibold">(Promo BOOM30*)</span></span>
-                    <span className="font-bold text-emerald-600">- ৳ {discountPromo.toLocaleString()}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">Discount <span className="text-emerald-700 font-semibold">(Referral 2254152)</span></span>
-                    <span className="font-bold text-emerald-600">- ৳ {discountReferral.toLocaleString()}</span>
-                  </div>
-                  <div className="flex items-start justify-between text-sm gap-2">
-                    <span className="text-slate-500 leading-snug">Discount <span className="text-emerald-700 font-semibold">(5% Off* Visa Card, upto ৳ 1,500)</span></span>
-                    <span className="font-bold text-emerald-600 shrink-0">- ৳ {discountVisa.toLocaleString()}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">Discount <span className="text-emerald-700 font-semibold">(1% Dis on Adv Pay)</span></span>
-                    <span className="font-bold text-emerald-600">- ৳ {discountAdvPay.toLocaleString()}</span>
-                  </div>
-                  <div className="flex items-center justify-between pt-2 border-t border-dashed border-slate-200">
-                    <span className="font-extrabold text-slate-900 text-sm">Checkout Lowest</span>
-                    <span className="font-black text-[#6c2bd9] text-base">৳ {checkoutLowest.toLocaleString()}/-</span>
-                  </div>
-                  <div className="pt-1 space-y-0.5">
-                    <p className="text-[10px] text-slate-400"><span className="font-bold text-slate-500">*</span> Single Use Only</p>
-                    <p className="text-[10px] text-slate-400"><span className="font-bold text-slate-500">**</span> All discounts are subject to proper use of promo codes and methods fulfilling eligibility.</p>
-                  </div>
-                </div>
-              );
-            })()}
-
-            <div className="flex gap-4">
-              <div className="flex items-center border border-slate-200 rounded-lg bg-slate-50 overflow-hidden h-12 w-32 shrink-0">
+            {/* Qty + Add to Cart + Buy Now */}
+            <div className="flex gap-3 mb-3">
+              <div className="flex items-center border border-slate-200 rounded-lg bg-white overflow-hidden h-12 w-28 shrink-0">
                 <button 
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-full flex items-center justify-center text-slate-600 hover:bg-slate-200 hover:text-slate-900 font-bold transition-colors"
-                >-</button>
-                <div className="flex-1 flex items-center justify-center font-bold text-slate-900 bg-white h-full border-x border-slate-200">
+                  className="w-9 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 font-bold transition-colors"
+                >−</button>
+                <div className="flex-1 flex items-center justify-center font-bold text-slate-900 border-x border-slate-200 h-full">
                   {quantity}
                 </div>
                 <button 
                   onClick={() => setQuantity(quantity + 1)}
-                  className="w-10 h-full flex items-center justify-center text-slate-600 hover:bg-slate-200 hover:text-slate-900 font-bold transition-colors"
+                  className="w-9 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 font-bold transition-colors"
                 >+</button>
               </div>
-              <div className="flex gap-2 flex-1">
-                <Button className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold h-12">
-                  Add to Cart
-                </Button>
-                <Button className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold h-12 shadow-[0_4px_14px_rgba(16,185,129,0.3)] hover:-translate-y-0.5 transition-transform">
-                  Buy Now
-                </Button>
-              </div>
+              <Button className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold h-12">
+                Add to Cart
+              </Button>
+              <Button className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold h-12 shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:-translate-y-0.5 transition-transform">
+                Buy Now
+              </Button>
             </div>
+
+            {/* Copy Product ID */}
+            <button
+              onClick={() => navigator.clipboard.writeText(product.sku)}
+              className="text-[11px] text-slate-400 hover:text-primary transition-colors flex items-center gap-1"
+            >
+              <span>Copy Product ID:</span>
+              <span className="font-bold text-slate-600">{product.sku}</span>
+              <span className="text-[10px] underline">Copy</span>
+            </button>
+
           </div>
 
         </div>
