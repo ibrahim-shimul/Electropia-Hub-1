@@ -330,13 +330,53 @@ export default function ProductDetails() {
               })}
             </div>
 
-            <div className="flex items-center justify-between py-4 border-y border-slate-100 mb-5">
-               <span className="font-bold text-slate-700">Total Price:</span>
-               <div className="text-right">
-                 <div className="font-heading font-black text-2xl text-slate-900">৳ {(currentPrice * quantity).toLocaleString()}</div>
-                 {quantity > 1 && <div className="text-xs text-emerald-600 font-bold">Bulk discount applied!</div>}
-               </div>
-            </div>
+            {/* Pricing Breakdown */}
+            {(() => {
+              const regularPrice   = currentPrice * quantity;
+              const discountPromo    = 300;
+              const discountReferral = 300;
+              const discountVisa     = Math.min(Math.round(regularPrice * 0.05), 1500);
+              const discountAdvPay   = Math.round(regularPrice * 0.01);
+              const checkoutLowest   = regularPrice - discountPromo - discountReferral - discountVisa - discountAdvPay;
+              const itemLabel        = String(quantity).padStart(2, "0");
+              return (
+                <div className="border-y border-slate-100 py-4 mb-5 space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-600 font-medium">
+                      Regular Price <span className="text-slate-400 font-normal">({itemLabel} item{quantity !== 1 ? "s" : ""})</span>
+                    </span>
+                    <span className="font-bold text-slate-900">৳ {regularPrice.toLocaleString()}</span>
+                  </div>
+                  {quantity > 1 && (
+                    <div className="text-[10px] text-emerald-600 font-bold text-right -mt-1">Bulk discount applied!</div>
+                  )}
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-500">Discount <span className="text-emerald-700 font-semibold">(Promo BOOM30*)</span></span>
+                    <span className="font-bold text-emerald-600">- ৳ {discountPromo.toLocaleString()}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-500">Discount <span className="text-emerald-700 font-semibold">(Referral 2254152)</span></span>
+                    <span className="font-bold text-emerald-600">- ৳ {discountReferral.toLocaleString()}</span>
+                  </div>
+                  <div className="flex items-start justify-between text-sm gap-2">
+                    <span className="text-slate-500 leading-snug">Discount <span className="text-emerald-700 font-semibold">(5% Off* Visa Card, upto ৳ 1,500)</span></span>
+                    <span className="font-bold text-emerald-600 shrink-0">- ৳ {discountVisa.toLocaleString()}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-500">Discount <span className="text-emerald-700 font-semibold">(1% Dis on Adv Pay)</span></span>
+                    <span className="font-bold text-emerald-600">- ৳ {discountAdvPay.toLocaleString()}</span>
+                  </div>
+                  <div className="flex items-center justify-between pt-2 border-t border-dashed border-slate-200">
+                    <span className="font-extrabold text-slate-900 text-sm">Checkout Lowest</span>
+                    <span className="font-black text-[#6c2bd9] text-base">৳ {checkoutLowest.toLocaleString()}/-</span>
+                  </div>
+                  <div className="pt-1 space-y-0.5">
+                    <p className="text-[10px] text-slate-400"><span className="font-bold text-slate-500">*</span> Single Use Only</p>
+                    <p className="text-[10px] text-slate-400"><span className="font-bold text-slate-500">**</span> All discounts are subject to proper use of promo codes and methods fulfilling eligibility.</p>
+                  </div>
+                </div>
+              );
+            })()}
 
             <div className="flex gap-4">
               <div className="flex items-center border border-slate-200 rounded-lg bg-slate-50 overflow-hidden h-12 w-32 shrink-0">
