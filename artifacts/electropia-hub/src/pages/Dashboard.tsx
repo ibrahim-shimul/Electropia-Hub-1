@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LayoutDashboard, Package, Heart, MapPin, Wallet, Bell, UserCog, LogOut, Users, Clock, Flame } from "lucide-react";
+import { LayoutDashboard, Package, Heart, MapPin, Wallet, Bell, UserCog, LogOut, Users } from "lucide-react";
 import Overview from "@/components/dashboard/Overview";
 import Orders from "@/components/dashboard/Orders";
 import WalletTab from "@/components/dashboard/Wallet";
@@ -8,21 +8,7 @@ import Addresses from "@/components/dashboard/Addresses";
 import Notifications from "@/components/dashboard/Notifications";
 import AccountSettings from "@/components/dashboard/AccountSettings";
 import MyGroupDeals from "@/components/dashboard/MyGroupDeals";
-import { Progress } from "@/components/ui/progress";
 import { useRoute, useLocation } from "wouter";
-
-const ACTIVE_GROUP_DEAL = {
-  id: "GD-001",
-  product: {
-    name: "SAFE E18KINV Inverter Split AC - 1.5 Ton",
-    image: "https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&q=80&w=100&h=100",
-    dealPrice: 45000,
-    originalPrice: 47999,
-  },
-  targetCustomers: 50,
-  currentCustomers: 45,
-  endsIn: "14h 20m",
-};
 
 export default function Dashboard() {
   const [, params] = useRoute("/dashboard/:tab?");
@@ -85,71 +71,6 @@ export default function Dashboard() {
               <LogOut className="w-4 h-4" />
               Logout
             </button>
-          </div>
-
-          {/* Active Group Deal Widget */}
-          <div className="mx-3 mt-2 mb-4">
-            <div className="rounded-xl border border-purple-200 bg-gradient-to-b from-purple-50 to-white p-3 shadow-sm">
-              {/* Header */}
-              <div className="flex items-center gap-1.5 mb-2">
-                <Flame className="w-3.5 h-3.5 text-orange-500 fill-orange-400" />
-                <span className="text-[10px] font-extrabold text-orange-500 uppercase tracking-wide">Active Group Deal</span>
-              </div>
-
-              {/* Product row */}
-              <div className="flex gap-2 items-start mb-2.5">
-                <img
-                  src={ACTIVE_GROUP_DEAL.product.image}
-                  alt={ACTIVE_GROUP_DEAL.product.name}
-                  className="w-11 h-11 rounded-lg object-cover border border-slate-100 shrink-0"
-                />
-                <div className="min-w-0">
-                  <p className="text-[11px] font-bold text-slate-800 leading-tight line-clamp-2 mb-1">
-                    {ACTIVE_GROUP_DEAL.product.name}
-                  </p>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-[13px] font-extrabold text-[#6c2bd9]">
-                      ৳ {ACTIVE_GROUP_DEAL.product.dealPrice.toLocaleString()}
-                    </span>
-                    <span className="text-[10px] text-slate-400 line-through">
-                      ৳ {ACTIVE_GROUP_DEAL.product.originalPrice.toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Progress */}
-              <div className="mb-2">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-[10px] text-slate-500 font-semibold flex items-center gap-1">
-                    <Users className="w-3 h-3" />
-                    {ACTIVE_GROUP_DEAL.currentCustomers}/{ACTIVE_GROUP_DEAL.targetCustomers} joined
-                  </span>
-                  <span className="text-[10px] font-bold text-emerald-600">
-                    {Math.round((ACTIVE_GROUP_DEAL.currentCustomers / ACTIVE_GROUP_DEAL.targetCustomers) * 100)}%
-                  </span>
-                </div>
-                <Progress
-                  value={(ACTIVE_GROUP_DEAL.currentCustomers / ACTIVE_GROUP_DEAL.targetCustomers) * 100}
-                  className="h-1.5 bg-purple-100 [&>div]:bg-gradient-to-r [&>div]:from-[#6c2bd9] [&>div]:to-purple-400"
-                />
-              </div>
-
-              {/* Countdown */}
-              <div className="flex items-center gap-1 mb-2.5">
-                <Clock className="w-3 h-3 text-slate-400" />
-                <span className="text-[10px] text-slate-500">Ends in</span>
-                <span className="text-[11px] font-extrabold text-rose-500">{ACTIVE_GROUP_DEAL.endsIn}</span>
-              </div>
-
-              {/* CTA */}
-              <button
-                onClick={() => handleTabClick("group_deals")}
-                className="w-full py-1.5 rounded-lg bg-[#6c2bd9] hover:bg-[#5821b0] text-white text-[11px] font-bold transition-colors"
-              >
-                View My Deal →
-              </button>
-            </div>
           </div>
         </nav>
       </aside>
