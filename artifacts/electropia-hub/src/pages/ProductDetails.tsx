@@ -20,6 +20,19 @@ export default function ProductDetails() {
   const [sellerAddons, setSellerAddons] = useState<(number | null)[]>([null, null, null, null]);
   const [reviewSubTab, setReviewSubTab] = useState<"product" | "seller">("product");
 
+  // Write a review form
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewHover, setReviewHover] = useState(0);
+  const [reviewText, setReviewText] = useState("");
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
+
+  // Ask a question form
+  const [showQAForm, setShowQAForm] = useState(false);
+  const [questionText, setQuestionText] = useState("");
+  const [questionType, setQuestionType] = useState<"general" | "seller">("general");
+  const [questionSubmitted, setQuestionSubmitted] = useState(false);
+
   const HASH_TO_TAB: Record<string, string> = {
     "#reviews": "reviews",
     "#description": "desc",
@@ -1052,7 +1065,98 @@ export default function ProductDetails() {
                           );
                         })()}
 
-                        {/* 4 ── Review list */}
+                        {/* 4 ── Write a Review */}
+                        <div className="mb-6 border border-slate-200 rounded-xl overflow-hidden">
+                          {!showReviewForm && !reviewSubmitted && (
+                            <button
+                              onClick={() => setShowReviewForm(true)}
+                              className="w-full flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors text-left"
+                            >
+                              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm shrink-0">J</div>
+                              <span className="text-sm text-slate-400 flex-1">Share your experience with this product...</span>
+                              <span className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full">Write a Review</span>
+                            </button>
+                          )}
+
+                          {showReviewForm && !reviewSubmitted && (
+                            <div className="p-4">
+                              <div className="flex items-center gap-3 mb-4">
+                                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm shrink-0">J</div>
+                                <div>
+                                  <p className="text-sm font-bold text-slate-900">John Doe</p>
+                                  <p className="text-[11px] text-slate-400">Reviewing as a verified customer</p>
+                                </div>
+                              </div>
+
+                              {/* Star picker */}
+                              <div className="mb-3">
+                                <p className="text-xs font-semibold text-slate-500 mb-2">Your Rating</p>
+                                <div className="flex gap-1">
+                                  {[1,2,3,4,5].map(s => (
+                                    <button
+                                      key={s}
+                                      onMouseEnter={() => setReviewHover(s)}
+                                      onMouseLeave={() => setReviewHover(0)}
+                                      onClick={() => setReviewRating(s)}
+                                      className="p-0.5 transition-transform hover:scale-110"
+                                    >
+                                      <Star className={`w-7 h-7 transition-colors ${s <= (reviewHover || reviewRating) ? "fill-amber-400 text-amber-400" : "fill-slate-200 text-slate-200"}`} />
+                                    </button>
+                                  ))}
+                                  {reviewRating > 0 && (
+                                    <span className="ml-2 self-center text-xs font-bold text-amber-500">
+                                      {["","Poor","Fair","Good","Very Good","Excellent"][reviewRating]}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Text */}
+                              <textarea
+                                value={reviewText}
+                                onChange={e => setReviewText(e.target.value)}
+                                placeholder="What did you like or dislike? How was the quality, delivery, and installation?"
+                                rows={4}
+                                className="w-full text-sm border border-slate-200 rounded-lg p-3 text-slate-800 placeholder-slate-400 resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30"
+                              />
+                              <p className="text-[11px] text-slate-400 mt-1 text-right">{reviewText.length}/1000</p>
+
+                              <div className="flex items-center gap-2 mt-3">
+                                <Button
+                                  onClick={() => {
+                                    if (reviewRating > 0 && reviewText.trim()) {
+                                      setReviewSubmitted(true);
+                                      setShowReviewForm(false);
+                                    }
+                                  }}
+                                  disabled={reviewRating === 0 || reviewText.trim().length === 0}
+                                  className="bg-primary hover:bg-primary/90 text-white font-bold px-5"
+                                >
+                                  Submit Review
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  onClick={() => { setShowReviewForm(false); setReviewRating(0); setReviewText(""); }}
+                                  className="text-slate-500 font-semibold"
+                                >
+                                  Cancel
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+
+                          {reviewSubmitted && (
+                            <div className="p-5 flex items-center gap-3 bg-emerald-50">
+                              <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                              <div>
+                                <p className="text-sm font-bold text-emerald-700">Review submitted! Thank you, John.</p>
+                                <p className="text-[11px] text-emerald-600">Your review will appear after verification.</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* 5 ── Review list */}
                         <div className="space-y-4">
                           {(reviewSubTab === "product" ? PRODUCT_REVIEWS : SELLER_REVIEWS).map((review, i) => (
                             <ReviewCard key={i} review={review} />
@@ -1320,9 +1424,89 @@ export default function ProductDetails() {
                           ))}
                         </div>
 
-                        <div className="mt-6 p-4 bg-slate-50 border border-dashed border-slate-300 rounded-xl text-center">
-                          <p className="text-sm text-slate-500 mb-3">Have a question about this product?</p>
-                          <Button className="bg-primary hover:bg-primary/90 text-white font-bold">Ask a Question</Button>
+                        {/* Ask a Question */}
+                        <div className="mt-5 border border-slate-200 rounded-xl overflow-hidden">
+                          {!showQAForm && !questionSubmitted && (
+                            <button
+                              onClick={() => setShowQAForm(true)}
+                              className="w-full flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors text-left"
+                            >
+                              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm shrink-0">J</div>
+                              <span className="text-sm text-slate-400 flex-1">Have a question about this product?</span>
+                              <span className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full">Ask a Question</span>
+                            </button>
+                          )}
+
+                          {showQAForm && !questionSubmitted && (
+                            <div className="p-4">
+                              <div className="flex items-center gap-3 mb-4">
+                                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm shrink-0">J</div>
+                                <div>
+                                  <p className="text-sm font-bold text-slate-900">John Doe</p>
+                                  <p className="text-[11px] text-slate-400">Asking as a verified customer</p>
+                                </div>
+                              </div>
+
+                              {/* Question type */}
+                              <div className="flex gap-2 mb-3">
+                                {(["general","seller"] as const).map(t => (
+                                  <button
+                                    key={t}
+                                    onClick={() => setQuestionType(t)}
+                                    className={`text-xs font-bold px-3 py-1.5 rounded-full border transition-all ${
+                                      questionType === t
+                                        ? "bg-primary text-white border-primary"
+                                        : "bg-white text-slate-600 border-slate-200 hover:border-primary/40"
+                                    }`}
+                                  >
+                                    {t === "general" ? "General Question" : `Ask Seller (${product.seller.name})`}
+                                  </button>
+                                ))}
+                              </div>
+
+                              {/* Textarea */}
+                              <textarea
+                                value={questionText}
+                                onChange={e => setQuestionText(e.target.value)}
+                                placeholder={questionType === "general" ? "e.g. Is this AC suitable for a 150 sq ft room?" : `e.g. Does ${product.seller.name} offer free installation?`}
+                                rows={3}
+                                className="w-full text-sm border border-slate-200 rounded-lg p-3 text-slate-800 placeholder-slate-400 resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30"
+                              />
+                              <p className="text-[11px] text-slate-400 mt-1 text-right">{questionText.length}/500</p>
+
+                              <div className="flex items-center gap-2 mt-3">
+                                <Button
+                                  onClick={() => {
+                                    if (questionText.trim()) {
+                                      setQuestionSubmitted(true);
+                                      setShowQAForm(false);
+                                    }
+                                  }}
+                                  disabled={questionText.trim().length === 0}
+                                  className="bg-primary hover:bg-primary/90 text-white font-bold px-5"
+                                >
+                                  Submit Question
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  onClick={() => { setShowQAForm(false); setQuestionText(""); }}
+                                  className="text-slate-500 font-semibold"
+                                >
+                                  Cancel
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+
+                          {questionSubmitted && (
+                            <div className="p-5 flex items-center gap-3 bg-emerald-50">
+                              <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                              <div>
+                                <p className="text-sm font-bold text-emerald-700">Question submitted! Thank you, John.</p>
+                                <p className="text-[11px] text-emerald-600">The seller or Electropia team will reply shortly.</p>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </TabsContent>
 
