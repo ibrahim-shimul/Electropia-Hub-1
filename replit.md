@@ -1,5 +1,20 @@
 # Workspace
 
+## Electropia Hub — Feature Status
+
+- **ProductDetails page**: Specs tables, seller-dependent specs, variant selectors (color, capacity), delivery info, clean price block with savings, Copy Product ID link, Add to Cart wired to CartContext
+- **Cart Drawer**: Slide-out drawer from the right side triggered by "Add to Cart"; shows items grouped by store with star rating, qty steppers, per-item subtotals, store subtotal, cart total, free-shipping progress bar (৳50,000 threshold), View Cart and Checkout buttons; managed via `CartContext` (React Context)
+- **CartContext**: Global cart state at `src/context/CartContext.tsx`; provides `addItem`, `removeItem`, `updateQty`, `clearCart`, `openDrawer`, `closeDrawer`, `isOpen`
+- **Cart page** (`/cart/multi`, `/cart/single`): Multi-shop and single-shop layouts with CartTotalsSidebar (itemized discounts, promo/referral codes)
+- **Checkout Order Summary**: Correct ৳ formatting, conditional EMI/SSLCOMMERZ fee display, PAYABLE TOTAL in bold uppercase
+- **Dashboard**: My Group Deals tab
+
+## GitHub Sync
+- Repo: `ibrahim-shimul/Electropia-Hub-1`
+- Auth: `GITHUB_PERSONAL_ACCESS_TOKEN` env var (bash only, 40 chars)
+
+
+
 ## Overview
 
 pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.

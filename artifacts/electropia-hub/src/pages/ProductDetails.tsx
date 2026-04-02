@@ -6,8 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { MOCK_PRODUCTS } from "@/lib/mock-data";
+import { useCart } from "@/context/CartContext";
 
 export default function ProductDetails() {
+  const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const [groupCurrent] = useState(32);
@@ -302,7 +304,24 @@ export default function ProductDetails() {
                   className="w-9 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 font-bold transition-colors"
                 >+</button>
               </div>
-              <Button className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold h-12">
+              <Button
+                className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold h-12"
+                onClick={() => {
+                  for (let i = 0; i < quantity; i++) {
+                    addItem({
+                      id: product.sku,
+                      name: product.name,
+                      sku: product.sku,
+                      image: product.images[0],
+                      price: product.price,
+                      originalPrice: product.originalPrice,
+                      storeName: product.seller.name,
+                      storeRating: 4.9,
+                      storeReviews: 154,
+                    });
+                  }
+                }}
+              >
                 Add to Cart
               </Button>
               <Button className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold h-12 shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:-translate-y-0.5 transition-transform">
