@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Star, Heart, Share2, ShieldCheck, MapPin, ChevronRight, CheckCircle2, Users, Clock, AlertCircle, Truck, Package, Wrench, RotateCcw, Award } from "lucide-react";
+import { Star, Heart, Share2, ShieldCheck, MapPin, ChevronRight, CheckCircle2, Users, Clock, AlertCircle, Truck, Package, Wrench, RotateCcw, Award, ImagePlus, X as XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -25,6 +25,7 @@ export default function ProductDetails() {
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewHover, setReviewHover] = useState(0);
   const [reviewText, setReviewText] = useState("");
+  const [reviewImages, setReviewImages] = useState<string[]>([]);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   // Ask a question form
@@ -1135,7 +1136,50 @@ export default function ProductDetails() {
                               />
                               <p className="text-[11px] text-slate-400 mt-1 text-right">{reviewText.length}/1000</p>
 
-                              <div className="flex items-center gap-2 mt-3">
+                              {/* Image upload */}
+                              <div className="mt-3">
+                                <p className="text-xs font-semibold text-slate-500 mb-2">Add Photos <span className="text-slate-400 font-normal">(optional, max 5)</span></p>
+                                <div className="flex flex-wrap gap-2 items-center">
+                                  {reviewImages.map((src, idx) => (
+                                    <div key={idx} className="relative w-16 h-16 rounded-lg overflow-hidden border border-slate-200 shrink-0 group">
+                                      <img src={src} alt={`preview ${idx + 1}`} className="w-full h-full object-cover" />
+                                      <button
+                                        onClick={() => setReviewImages(prev => prev.filter((_, i) => i !== idx))}
+                                        className="absolute top-0.5 right-0.5 w-4 h-4 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                      >
+                                        <XIcon className="w-2.5 h-2.5 text-white" />
+                                      </button>
+                                    </div>
+                                  ))}
+                                  {reviewImages.length < 5 && (
+                                    <label className="w-16 h-16 rounded-lg border-2 border-dashed border-slate-300 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-all shrink-0">
+                                      <ImagePlus className="w-5 h-5 text-slate-400" />
+                                      <span className="text-[9px] text-slate-400 mt-0.5">Add</span>
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        className="hidden"
+                                        onChange={e => {
+                                          const files = Array.from(e.target.files ?? []);
+                                          files.slice(0, 5 - reviewImages.length).forEach(file => {
+                                            const reader = new FileReader();
+                                            reader.onload = ev => {
+                                              if (ev.target?.result) {
+                                                setReviewImages(prev => [...prev, ev.target!.result as string]);
+                                              }
+                                            };
+                                            reader.readAsDataURL(file);
+                                          });
+                                          e.target.value = "";
+                                        }}
+                                      />
+                                    </label>
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2 mt-4">
                                 <Button
                                   onClick={() => {
                                     if (reviewRating > 0 && reviewText.trim()) {
@@ -1150,7 +1194,7 @@ export default function ProductDetails() {
                                 </Button>
                                 <Button
                                   variant="ghost"
-                                  onClick={() => { setShowReviewForm(false); setReviewRating(0); setReviewText(""); }}
+                                  onClick={() => { setShowReviewForm(false); setReviewRating(0); setReviewText(""); setReviewImages([]); }}
                                   className="text-slate-500 font-semibold"
                                 >
                                   Cancel
