@@ -1280,57 +1280,73 @@ export default function ProductDetails() {
 
                       {/* ── Q&A TAB ── */}
                       <TabsContent value="qa" className="mt-0">
-                        <div className="space-y-6">
+                        <div className="space-y-5">
                           {QA_ITEMS.map((item, i) => (
-                            <div key={i} className="border border-slate-100 rounded-xl overflow-hidden">
-                              {/* Question */}
-                              <div className="bg-slate-50 p-4">
-                                <div className="flex items-start gap-3">
-                                  <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm shrink-0">
-                                    {item.asker.charAt(0)}
-                                  </div>
-                                  <div className="flex-1">
-                                    <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                                      <span className="font-bold text-sm text-slate-900">{item.asker}</span>
-                                      <span className="text-[10px] text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-full">
-                                        {item.purchaseCount} verified purchase{item.purchaseCount !== 1 ? "s" : ""} since {item.memberSince}
-                                      </span>
+                            <div key={i} className="rounded-2xl border border-slate-100 bg-white shadow-sm overflow-hidden">
+
+                              {/* ── QUESTION ROW ── */}
+                              <div className="flex gap-0">
+                                {/* Q badge strip */}
+                                <div className="w-10 shrink-0 bg-primary flex flex-col items-center pt-4 gap-1">
+                                  <span className="text-white font-black text-base leading-none">Q</span>
+                                  <span className="text-primary-foreground/60 text-[8px] font-bold leading-none tracking-widest rotate-180" style={{writingMode:"vertical-rl"}}>QUESTION</span>
+                                </div>
+                                {/* Question content */}
+                                <div className="flex-1 p-4">
+                                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                                    <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs shrink-0">
+                                      {item.asker.charAt(0)}
                                     </div>
-                                    <p className="text-[11px] font-semibold text-slate-500 mb-2">
-                                      asked a{" "}
-                                      {item.type === "general"
-                                        ? <span className="text-primary font-bold">General Question</span>
-                                        : <span>Question to <span className="text-amber-600 font-bold">{(item as typeof item & { targetSeller: string }).targetSeller}</span></span>
-                                      }
-                                    </p>
-                                    <p className="text-sm text-slate-800 font-medium leading-relaxed">{item.question}</p>
+                                    <span className="font-bold text-sm text-slate-900">{item.asker}</span>
+                                    <span className="text-[10px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                                      {item.purchaseCount} purchase{item.purchaseCount !== 1 ? "s" : ""} · since {item.memberSince}
+                                    </span>
+                                    {item.type !== "general" && (
+                                      <span className="text-[10px] text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full font-semibold">
+                                        → {(item as typeof item & { targetSeller: string }).targetSeller}
+                                      </span>
+                                    )}
                                   </div>
+                                  <p className="text-[14px] font-semibold text-slate-800 leading-snug mt-2">{item.question}</p>
                                 </div>
                               </div>
 
-                              {/* Replies */}
+                              {/* ── ANSWER ROWS ── */}
                               {item.replies.map((reply, ri) => (
-                                <div key={ri} className="border-t border-slate-100 p-4 bg-white">
-                                  <div className="flex items-start gap-3">
-                                    <div className={`w-7 h-7 rounded-full ${reply.color} flex items-center justify-center font-black text-white text-[11px] shrink-0`}>
-                                      {reply.avatar}
+                                <div key={ri} className="flex gap-0 border-t border-slate-100 bg-slate-50/60">
+                                  {/* A badge strip */}
+                                  <div className={`w-10 shrink-0 flex flex-col items-center pt-4 gap-1 ${reply.from === "Electropia" ? "bg-primary/10" : "bg-amber-50"}`}>
+                                    <span className={`font-black text-base leading-none ${reply.from === "Electropia" ? "text-primary" : "text-amber-600"}`}>A</span>
+                                    <span className={`text-[8px] font-bold leading-none tracking-widest rotate-180 ${reply.from === "Electropia" ? "text-primary/40" : "text-amber-400"}`} style={{writingMode:"vertical-rl"}}>ANSWER</span>
+                                  </div>
+                                  {/* Answer content */}
+                                  <div className="flex-1 p-4">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <div className={`w-6 h-6 rounded-full ${reply.color} flex items-center justify-center font-black text-white text-[10px] shrink-0`}>
+                                        {reply.avatar}
+                                      </div>
+                                      <span className={`text-[12px] font-extrabold ${reply.from === "Electropia" ? "text-primary" : "text-amber-700"}`}>
+                                        {reply.from}
+                                      </span>
+                                      {reply.from === "Electropia" && (
+                                        <span className="text-[9px] font-bold text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded-full uppercase tracking-wide">Official</span>
+                                      )}
+                                      {reply.from !== "Electropia" && (
+                                        <span className="text-[9px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-full uppercase tracking-wide">Seller</span>
+                                      )}
                                     </div>
-                                    <div>
-                                      <p className="text-[11px] font-black text-slate-700 mb-1">
-                                        Replied by <span className={reply.from === "Electropia" ? "text-primary" : "text-amber-600"}>{reply.from}:</span>
-                                      </p>
-                                      <p className="text-sm text-slate-600 leading-relaxed">{reply.text}</p>
-                                    </div>
+                                    <p className="text-sm text-slate-700 leading-relaxed">{reply.text}</p>
                                   </div>
                                 </div>
                               ))}
+
                             </div>
                           ))}
                         </div>
 
-                        <div className="mt-6 p-4 bg-slate-50 border border-dashed border-slate-300 rounded-xl text-center">
-                          <p className="text-sm text-slate-500 mb-3">Have a question about this product?</p>
-                          <Button className="bg-primary hover:bg-primary/90 text-white font-bold">Ask a Question</Button>
+                        <div className="mt-6 p-5 bg-primary/5 border border-primary/20 border-dashed rounded-2xl text-center">
+                          <p className="text-sm text-slate-600 mb-3 font-medium">এই পণ্য সম্পর্কে আপনার কোনো প্রশ্ন আছে?</p>
+                          <Button className="bg-primary hover:bg-primary/90 text-white font-bold px-6">প্রশ্ন করুন</Button>
                         </div>
                       </TabsContent>
 
