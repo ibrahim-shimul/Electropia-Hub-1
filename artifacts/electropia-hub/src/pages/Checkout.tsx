@@ -274,28 +274,39 @@ export default function Checkout() {
                     
                     <div className="grid grid-cols-2 gap-4 mb-6">
                       <div>
-                        <Label className="text-xs font-bold text-slate-700 mb-1.5 block">Bank Name</Label>
-                        <Input placeholder="bank name" className="bg-white" />
-                      </div>
-                      <div>
-                        <Label className="text-xs font-bold text-slate-700 mb-1.5 block">Routing</Label>
-                        <Input placeholder="routing..." className="bg-white" />
-                      </div>
-                      <div>
-                        <Label className="text-xs font-bold text-slate-700 mb-1.5 block">District/Zone</Label>
-                        <Input placeholder="district/zone" className="bg-white" />
-                      </div>
-                      <div>
-                        <Label className="text-xs font-bold text-slate-700 mb-1.5 block">Branch Name</Label>
-                        <Input placeholder="branch name" className="bg-white" />
-                      </div>
-                      <div>
                         <Label className="text-xs font-bold text-slate-700 mb-1.5 block">Amount</Label>
                         <Input placeholder="e.g. 14000" className="bg-white" />
                       </div>
                       <div>
                         <Label className="text-xs font-bold text-slate-700 mb-1.5 block">Transaction ID</Label>
                         <Input placeholder="164874585 89787" className="bg-white" />
+                      </div>
+                      <div>
+                        <Label className="text-xs font-bold text-slate-700 mb-1.5 block">A/C No</Label>
+                        <Input placeholder="Account number" className="bg-white" />
+                      </div>
+                      <div>
+                        <Label className="text-xs font-bold text-slate-700 mb-1.5 block">A/C Name</Label>
+                        <Input placeholder="Account holder name" className="bg-white" />
+                      </div>
+                      <div className="col-span-2">
+                        <Label className="text-xs font-bold text-slate-700 mb-1.5 block">
+                          Routing No
+                          <span className="text-[11px] font-normal text-slate-400 ml-1">(on Input, rest of the fields will be automatically filled.)</span>
+                        </Label>
+                        <Input placeholder="Enter routing number" className="bg-white" />
+                      </div>
+                      <div>
+                        <Label className="text-xs font-bold text-slate-700 mb-1.5 block">District/Zone</Label>
+                        <Input placeholder="district/zone" className="bg-white" />
+                      </div>
+                      <div>
+                        <Label className="text-xs font-bold text-slate-700 mb-1.5 block">Bank Name</Label>
+                        <Input placeholder="bank name" className="bg-white" />
+                      </div>
+                      <div>
+                        <Label className="text-xs font-bold text-slate-700 mb-1.5 block">Branch Name</Label>
+                        <Input placeholder="branch name" className="bg-white" />
                       </div>
                     </div>
 
