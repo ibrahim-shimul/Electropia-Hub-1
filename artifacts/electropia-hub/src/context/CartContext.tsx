@@ -11,7 +11,32 @@ export interface CartItem {
   storeName: string;
   storeRating: number;
   storeReviews: number;
+  isGroupDeal?: boolean;
+  groupDealId?: string;
+  groupDealEndsIn?: string;
+  groupDealJoined?: number;
+  groupDealTarget?: number;
 }
+
+const INITIAL_ITEMS: CartItem[] = [
+  {
+    id: "group-deal-gd001",
+    name: "Philips Essential Airfryer HD9252/90",
+    sku: "PH-HD9252",
+    image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&q=80&w=200&h=200",
+    price: 10500,
+    originalPrice: 12500,
+    quantity: 1,
+    storeName: "Philips Official Store",
+    storeRating: 4.7,
+    storeReviews: 238,
+    isGroupDeal: true,
+    groupDealId: "GD-002",
+    groupDealEndsIn: "6h 45m",
+    groupDealJoined: 18,
+    groupDealTarget: 20,
+  },
+];
 
 interface CartContextValue {
   items: CartItem[];
@@ -27,7 +52,7 @@ interface CartContextValue {
 const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(INITIAL_ITEMS);
   const [isOpen, setIsOpen] = useState(false);
 
   const openDrawer = useCallback(() => setIsOpen(true), []);

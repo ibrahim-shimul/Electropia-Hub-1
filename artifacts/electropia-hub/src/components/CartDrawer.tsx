@@ -4,18 +4,6 @@ import { X, Trash2, ShoppingCart, Star, Flame, Users, Clock } from "lucide-react
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 
-const FEATURED_GROUP_DEAL = {
-  productId: "1",
-  name: "SAFE E18KINV Intelligent Inverter Split Air Conditioner - 1.5 Ton",
-  image: "https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&q=80&w=200&h=200",
-  dealPrice: 45000,
-  originalPrice: 47999,
-  targetCustomers: 50,
-  currentCustomers: 45,
-  endsIn: "14h 20m",
-  savingsPct: 6,
-};
-
 export default function CartDrawer() {
   const { items, isOpen, closeDrawer, removeItem, updateQty, clearCart } = useCart();
   const [, setLocation] = useLocation();
@@ -36,7 +24,6 @@ export default function CartDrawer() {
   const cartTotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const progress = Math.min((cartTotal / FREE_SHIPPING_THRESHOLD) * 100, 100);
   const remaining = Math.max(FREE_SHIPPING_THRESHOLD - cartTotal, 0);
-  const dealProgress = Math.round((FEATURED_GROUP_DEAL.currentCustomers / FEATURED_GROUP_DEAL.targetCustomers) * 100);
 
   return (
     <>
@@ -77,7 +64,7 @@ export default function CartDrawer() {
         {/* Scrollable body */}
         <div className="flex-1 overflow-y-auto">
           {items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-4 text-slate-400 px-8 text-center pt-10 pb-4">
+            <div className="flex flex-col items-center justify-center h-full gap-4 text-slate-400 px-8 text-center">
               <ShoppingCart className="w-16 h-16 text-slate-200" />
               <p className="font-semibold text-slate-500">Your cart is empty</p>
               <p className="text-sm">Add some items to get started.</p>
@@ -107,33 +94,83 @@ export default function CartDrawer() {
                     {/* Items */}
                     <div className="space-y-3">
                       {storeItems.map(item => (
-                        <div key={item.id} className="flex gap-3 items-start">
-                          <div className="w-14 h-14 rounded-lg border border-slate-100 bg-slate-50 flex items-center justify-center shrink-0 overflow-hidden">
-                            <img src={item.image} alt={item.name} className="w-full h-full object-contain mix-blend-multiply p-1" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[12px] font-bold text-slate-800 leading-snug line-clamp-2 mb-0.5">{item.name}</p>
-                            <p className="text-[10px] text-slate-400 mb-1.5">SKU: {item.sku}</p>
-                            <div className="flex items-center justify-between">
-                              <span className="text-[12px] font-extrabold text-[#6c2bd9]">৳ {item.price.toLocaleString()}</span>
-                              <div className="flex items-center border border-slate-200 rounded overflow-hidden h-6">
-                                <button
-                                  onClick={() => updateQty(item.id, item.quantity - 1)}
-                                  className="w-6 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 text-sm font-bold transition-colors"
-                                >−</button>
-                                <span className="w-7 text-center text-[12px] font-bold text-slate-900 border-x border-slate-200">{item.quantity}</span>
-                                <button
-                                  onClick={() => updateQty(item.id, item.quantity + 1)}
-                                  className="w-6 h-full flex items-center justify-center bg-[#6c2bd9] text-white text-sm font-bold hover:bg-[#5821b0] transition-colors"
-                                >+</button>
+                        <div key={item.id}>
+                          {/* Group Deal badge row */}
+                          {item.isGroupDeal && (
+                            <div className="flex items-center gap-2 mb-1.5 px-1">
+                              <div className="flex items-center gap-1 bg-orange-50 border border-orange-200 rounded-full px-2 py-0.5">
+                                <Flame className="w-3 h-3 text-orange-500 fill-orange-400" />
+                                <span className="text-[10px] font-extrabold text-orange-600 uppercase tracking-wide">Group Deal</span>
                               </div>
-                              <span className="text-[12px] font-extrabold text-slate-900">৳ {(item.price * item.quantity).toLocaleString()}</span>
-                              <button
-                                onClick={() => removeItem(item.id)}
-                                className="text-rose-400 hover:text-rose-600 transition-colors ml-1"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
+                              <span className="text-[10px] text-slate-400 font-medium">#{item.groupDealId}</span>
+                            </div>
+                          )}
+
+                          <div className={`flex gap-3 items-start ${item.isGroupDeal ? "bg-gradient-to-br from-purple-50/60 to-orange-50/40 border border-purple-100 rounded-xl p-2.5" : ""}`}>
+                            {/* Product image */}
+                            <div className="w-14 h-14 rounded-lg border border-slate-100 bg-white flex items-center justify-center shrink-0 overflow-hidden">
+                              <img src={item.image} alt={item.name} className="w-full h-full object-contain mix-blend-multiply p-1" />
+                            </div>
+
+                            {/* Info */}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[12px] font-bold text-slate-800 leading-snug line-clamp-2 mb-0.5">{item.name}</p>
+                              <p className="text-[10px] text-slate-400 mb-1.5">SKU: {item.sku}</p>
+
+                              <div className="flex items-center justify-between">
+                                <div className="flex flex-col">
+                                  <span className="text-[12px] font-extrabold text-[#6c2bd9]">৳ {item.price.toLocaleString()}</span>
+                                  {item.originalPrice > item.price && (
+                                    <span className="text-[10px] text-slate-400 line-through leading-tight">৳ {item.originalPrice.toLocaleString()}</span>
+                                  )}
+                                </div>
+
+                                {/* Qty stepper */}
+                                <div className="flex items-center border border-slate-200 rounded overflow-hidden h-6">
+                                  <button
+                                    onClick={() => updateQty(item.id, item.quantity - 1)}
+                                    className="w-6 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 text-sm font-bold transition-colors"
+                                  >−</button>
+                                  <span className="w-7 text-center text-[12px] font-bold text-slate-900 border-x border-slate-200">{item.quantity}</span>
+                                  <button
+                                    onClick={() => updateQty(item.id, item.quantity + 1)}
+                                    className="w-6 h-full flex items-center justify-center bg-[#6c2bd9] text-white text-sm font-bold hover:bg-[#5821b0] transition-colors"
+                                  >+</button>
+                                </div>
+
+                                <span className="text-[12px] font-extrabold text-slate-900">৳ {(item.price * item.quantity).toLocaleString()}</span>
+
+                                {/* Delete */}
+                                <button
+                                  onClick={() => removeItem(item.id)}
+                                  className="text-rose-400 hover:text-rose-600 transition-colors ml-1"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+
+                              {/* Group deal meta row */}
+                              {item.isGroupDeal && item.groupDealJoined !== undefined && item.groupDealTarget && (
+                                <div className="mt-2 space-y-1">
+                                  <div className="h-1.5 bg-purple-100 rounded-full overflow-hidden">
+                                    <div
+                                      className="h-full bg-gradient-to-r from-[#6c2bd9] to-purple-400 rounded-full"
+                                      style={{ width: `${Math.round((item.groupDealJoined / item.groupDealTarget) * 100)}%` }}
+                                    />
+                                  </div>
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-[10px] text-slate-500 flex items-center gap-1">
+                                      <Users className="w-3 h-3" />
+                                      {item.groupDealJoined}/{item.groupDealTarget} joined
+                                    </span>
+                                    {item.groupDealEndsIn && (
+                                      <span className="text-[10px] text-rose-500 font-bold flex items-center gap-0.5">
+                                        <Clock className="w-3 h-3" /> {item.groupDealEndsIn}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -150,80 +187,6 @@ export default function CartDrawer() {
               })}
             </div>
           )}
-
-          {/* ── Featured Group Deal ── */}
-          <div className="mx-4 my-4">
-            <div className="rounded-2xl border border-purple-200 bg-gradient-to-br from-purple-50 via-white to-purple-50 overflow-hidden shadow-sm">
-              {/* Banner label */}
-              <div className="flex items-center gap-2 bg-gradient-to-r from-[#6c2bd9] to-purple-500 px-4 py-2">
-                <Flame className="w-3.5 h-3.5 text-orange-300 fill-orange-300 shrink-0" />
-                <span className="text-[11px] font-extrabold text-white uppercase tracking-wider">Featured Group Deal</span>
-                <span className="ml-auto text-[10px] bg-white/20 text-white font-bold px-2 py-0.5 rounded-full">
-                  Save {FEATURED_GROUP_DEAL.savingsPct}%
-                </span>
-              </div>
-
-              <div className="p-3">
-                {/* Product row */}
-                <div className="flex gap-3 items-start mb-3">
-                  <img
-                    src={FEATURED_GROUP_DEAL.image}
-                    alt={FEATURED_GROUP_DEAL.name}
-                    className="w-16 h-16 rounded-xl object-cover border border-purple-100 shrink-0"
-                  />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[12px] font-bold text-slate-800 leading-tight line-clamp-2 mb-1.5">
-                      {FEATURED_GROUP_DEAL.name}
-                    </p>
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="text-[15px] font-extrabold text-[#6c2bd9]">
-                        ৳ {FEATURED_GROUP_DEAL.dealPrice.toLocaleString()}
-                      </span>
-                      <span className="text-[11px] text-slate-400 line-through">
-                        ৳ {FEATURED_GROUP_DEAL.originalPrice.toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Progress bar */}
-                <div className="mb-2.5">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-[11px] text-slate-600 font-semibold flex items-center gap-1">
-                      <Users className="w-3 h-3 text-[#6c2bd9]" />
-                      {FEATURED_GROUP_DEAL.currentCustomers}/{FEATURED_GROUP_DEAL.targetCustomers} customers joined
-                    </span>
-                    <span className="text-[11px] font-bold text-emerald-600">{dealProgress}%</span>
-                  </div>
-                  <div className="h-2 bg-purple-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-[#6c2bd9] to-purple-400 rounded-full transition-all duration-500"
-                      style={{ width: `${dealProgress}%` }}
-                    />
-                  </div>
-                  <p className="text-[10px] text-slate-400 mt-1">Only {FEATURED_GROUP_DEAL.targetCustomers - FEATURED_GROUP_DEAL.currentCustomers} more needed to unlock!</p>
-                </div>
-
-                {/* Countdown row */}
-                <div className="flex items-center gap-1.5 mb-3">
-                  <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                  <span className="text-[11px] text-slate-500">Deal ends in</span>
-                  <span className="text-[12px] font-extrabold text-rose-500 tracking-wide">{FEATURED_GROUP_DEAL.endsIn}</span>
-                </div>
-
-                {/* CTA */}
-                <button
-                  onClick={() => {
-                    closeDrawer();
-                    setLocation(`/product/${FEATURED_GROUP_DEAL.productId}`);
-                  }}
-                  className="w-full py-2 rounded-xl bg-gradient-to-r from-[#6c2bd9] to-purple-500 hover:from-[#5821b0] hover:to-purple-600 text-white text-[12px] font-extrabold transition-all shadow-md shadow-purple-500/20 tracking-wide"
-                >
-                  Join This Group Deal →
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Footer */}
