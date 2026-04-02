@@ -1065,8 +1065,22 @@ export default function ProductDetails() {
                           );
                         })()}
 
-                        {/* 4 ── Write a Review */}
-                        <div className="mb-6 border border-slate-200 rounded-xl overflow-hidden">
+                        {/* 4 ── Review list */}
+                        <div className="space-y-4">
+                          {(reviewSubTab === "product" ? PRODUCT_REVIEWS : SELLER_REVIEWS).map((review, i) => (
+                            <ReviewCard key={i} review={review} />
+                          ))}
+                        </div>
+
+                        {/* Load More */}
+                        <div className="mt-8 flex justify-center">
+                          <Button variant="outline" className="px-10 font-bold border-slate-300 text-slate-700 hover:border-primary hover:text-primary">
+                            Load More Reviews
+                          </Button>
+                        </div>
+
+                        {/* 5 ── Write a Review */}
+                        <div className="mt-8 border border-slate-200 rounded-xl overflow-hidden">
                           {!showReviewForm && !reviewSubmitted && (
                             <button
                               onClick={() => setShowReviewForm(true)}
@@ -1154,20 +1168,6 @@ export default function ProductDetails() {
                               </div>
                             </div>
                           )}
-                        </div>
-
-                        {/* 5 ── Review list */}
-                        <div className="space-y-4">
-                          {(reviewSubTab === "product" ? PRODUCT_REVIEWS : SELLER_REVIEWS).map((review, i) => (
-                            <ReviewCard key={i} review={review} />
-                          ))}
-                        </div>
-
-                        {/* Load More */}
-                        <div className="mt-8 flex justify-center">
-                          <Button variant="outline" className="px-10 font-bold border-slate-300 text-slate-700 hover:border-primary hover:text-primary">
-                            Load More Reviews
-                          </Button>
                         </div>
                       </TabsContent>
 
