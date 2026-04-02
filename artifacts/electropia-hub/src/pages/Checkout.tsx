@@ -595,22 +595,22 @@ export default function Checkout() {
                   </div>
 
                   {/* Fees + Shipping block */}
-                  <div className="mt-3 pt-2.5 border-t border-slate-200 space-y-2">
-                    {selectedPayment === 'emi' && (
-                      <div className="flex justify-between text-slate-600">
-                        <span className="leading-snug">
-                          EMI Convenience Fee<br/>
-                          <span className="text-[11px] text-slate-500">(The City Bank, 36M @16%)</span>
-                        </span>
-                        <span className="font-medium text-slate-900 tabular-nums shrink-0 ml-2">: ৳ 7,484</span>
-                      </div>
-                    )}
-                    {selectedPayment === 'full' && (
-                      <div className="flex justify-between text-slate-600">
-                        <span>SSLCOMMERZ Gateway Charge (1.5%)</span>
-                        <span className="font-medium text-slate-900 tabular-nums">: ৳ 802</span>
-                      </div>
-                    )}
+                  <div className="mt-3 pt-2.5 border-t border-slate-200 space-y-2.5">
+                    <div className="flex justify-between text-slate-600">
+                      <span className="leading-snug">
+                        EMI Convenience Fee
+                        <span className="block text-[11px] text-slate-400">(The City Bank, 36M @16%)</span>
+                      </span>
+                      <span className={`font-medium tabular-nums shrink-0 ml-3 ${selectedPayment === 'emi' ? 'text-slate-900' : 'text-slate-300'}`}>
+                        : ৳ {selectedPayment === 'emi' ? '7,484' : '—'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-slate-600">
+                      <span>SSLCOMMERZ Gateway Charge (1.5%)</span>
+                      <span className={`font-medium tabular-nums shrink-0 ml-3 ${selectedPayment === 'full' ? 'text-slate-900' : 'text-slate-300'}`}>
+                        : ৳ {selectedPayment === 'full' ? '802' : '—'}
+                      </span>
+                    </div>
                     <div className="flex justify-between text-slate-600">
                       <span>Shipping</span>
                       <span className="font-medium text-slate-900 tabular-nums">: ৳ 200</span>
@@ -618,8 +618,8 @@ export default function Checkout() {
                   </div>
 
                   {/* Payable Total */}
-                  <div className="flex justify-between items-center mt-3 pt-2.5 border-t-2 border-slate-300">
-                    <span className="font-extrabold text-slate-900 uppercase tracking-wide text-sm">Payable Total</span>
+                  <div className="flex justify-between items-center mt-3 pt-3 border-t-2 border-slate-900">
+                    <span className="font-black text-slate-900 uppercase tracking-wide text-[13px]">Payable Total</span>
                     <span className="font-heading font-black text-[#6c2bd9] text-lg tabular-nums">
                       : ৳ {selectedPayment === 'emi' ? '52,956' : selectedPayment === 'full' ? '45,472' : '44,670'}
                     </span>
