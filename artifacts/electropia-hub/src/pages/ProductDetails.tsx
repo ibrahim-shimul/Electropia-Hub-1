@@ -960,28 +960,7 @@ export default function ProductDetails() {
                       {/* ── REVIEWS TAB ── */}
                       <TabsContent value="reviews" className="mt-0">
 
-                        {/* Rating summary */}
-                        <div className="flex items-center gap-10 mb-6 pb-6 border-b border-slate-100">
-                          <div className="text-center shrink-0">
-                            <p className="font-heading font-black text-5xl text-slate-900">4.6</p>
-                            <div className="flex items-center justify-center gap-0.5 my-2">{renderStars(5, "w-4 h-4")}</div>
-                            <p className="text-xs text-slate-500 font-semibold">{TOTAL_REVIEWS} reviews</p>
-                          </div>
-                          <div className="flex-1 space-y-1.5">
-                            {REVIEW_RATINGS.map(r => (
-                              <div key={r.stars} className="flex items-center gap-3">
-                                <span className="text-xs font-bold text-slate-600 w-4 text-right">{r.stars}</span>
-                                <Star className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" />
-                                <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-                                  <div className="h-full bg-amber-400 rounded-full transition-all" style={{ width: `${Math.round(r.count / TOTAL_REVIEWS * 100)}%` }} />
-                                </div>
-                                <span className="text-xs font-bold text-slate-500 w-7 text-right">{r.count}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Sub-tab toggle */}
+                        {/* 1 ── Sub-tab toggle (ABOVE everything) */}
                         <div className="flex gap-2 mb-6">
                           {(["product", "seller"] as const).map(tab => (
                             <button
@@ -998,7 +977,82 @@ export default function ProductDetails() {
                           ))}
                         </div>
 
-                        {/* Review list */}
+                        {/* 2 ── Rating summary */}
+                        <div className="flex items-center gap-10 mb-6 pb-6 border-b border-slate-100">
+                          <div className="text-center shrink-0">
+                            <p className="font-heading font-black text-5xl text-slate-900">
+                              {reviewSubTab === "product" ? "4.6" : "4.5"}
+                            </p>
+                            <div className="flex items-center justify-center gap-0.5 my-2">{renderStars(5, "w-4 h-4")}</div>
+                            <p className="text-xs text-slate-500 font-semibold">
+                              {reviewSubTab === "product" ? TOTAL_REVIEWS : SELLER_REVIEWS.length} reviews
+                            </p>
+                          </div>
+                          <div className="flex-1 space-y-1.5">
+                            {REVIEW_RATINGS.map(r => (
+                              <div key={r.stars} className="flex items-center gap-3">
+                                <span className="text-xs font-bold text-slate-600 w-4 text-right">{r.stars}</span>
+                                <Star className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" />
+                                <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                  <div className="h-full bg-amber-400 rounded-full transition-all" style={{ width: `${Math.round(r.count / TOTAL_REVIEWS * 100)}%` }} />
+                                </div>
+                                <span className="text-xs font-bold text-slate-500 w-7 text-right">{r.count}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* 3 ── Customer photo gallery */}
+                        {(() => {
+                          const activeReviews = reviewSubTab === "product" ? PRODUCT_REVIEWS : SELLER_REVIEWS;
+                          const allImages = activeReviews.flatMap(r =>
+                            r.images.map(img => ({ img, reviewer: r.name, rating: r.rating }))
+                          );
+                          if (allImages.length === 0) return null;
+                          return (
+                            <div className="mb-6 pb-6 border-b border-slate-100">
+                              <div className="flex items-center gap-2 mb-3">
+                                <span className="w-1 h-4 bg-primary rounded-full inline-block" />
+                                <h4 className="text-sm font-extrabold text-slate-800">
+                                  Customer Photos
+                                  <span className="ml-2 text-[11px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">{allImages.length}</span>
+                                </h4>
+                              </div>
+                              <div className="flex flex-wrap gap-2">
+                                {allImages.map((item, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="relative w-[72px] h-[72px] rounded-xl overflow-hidden border-2 border-white shadow-md cursor-pointer group"
+                                    title={`Photo by ${item.reviewer}`}
+                                  >
+                                    <img
+                                      src={item.img}
+                                      alt={`Customer photo by ${item.reviewer}`}
+                                      className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
+                                    />
+                                    {/* Hover overlay */}
+                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-200 flex items-end p-1">
+                                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-0.5">
+                                        {[1,2,3,4,5].map(s => (
+                                          <Star key={s} className={`w-2 h-2 ${s <= item.rating ? "fill-amber-400 text-amber-400" : "fill-white/40 text-white/40"}`} />
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                                {/* Show all button if more than 8 */}
+                                {allImages.length > 8 && (
+                                  <div className="w-[72px] h-[72px] rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-all group">
+                                    <span className="text-lg font-black text-slate-400 group-hover:text-primary leading-none">+{allImages.length - 8}</span>
+                                    <span className="text-[9px] font-bold text-slate-400 group-hover:text-primary">more</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })()}
+
+                        {/* 4 ── Review list */}
                         <div className="space-y-4">
                           {(reviewSubTab === "product" ? PRODUCT_REVIEWS : SELLER_REVIEWS).map((review, i) => (
                             <ReviewCard key={i} review={review} />
