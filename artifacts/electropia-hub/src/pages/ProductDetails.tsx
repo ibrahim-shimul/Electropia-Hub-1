@@ -1068,10 +1068,161 @@ export default function ProductDetails() {
                       </TabsContent>
 
                       {/* ── DESCRIPTION TAB ── */}
-                      <TabsContent value="desc" className="text-slate-600 text-sm leading-relaxed mt-0">
-                        <p className="mb-4">This intelligent inverter split air conditioner from SAFE provides optimal cooling while ensuring energy efficiency. Designed for modern homes, it features advanced air purification filters and a whisper-quiet operation mode.</p>
-                        <div className="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
-                          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Sold by: {active.name}</p>
+                      <TabsContent value="desc" className="mt-0">
+
+                        {/* Hero image grid */}
+                        <div className="grid grid-cols-3 gap-3 mb-8 rounded-2xl overflow-hidden">
+                          <div className="col-span-2 aspect-[16/9] bg-slate-100 overflow-hidden rounded-xl">
+                            <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                          </div>
+                          <div className="flex flex-col gap-3">
+                            {product.images.slice(1).map((img, i) => (
+                              <div key={i} className="flex-1 bg-slate-100 overflow-hidden rounded-xl">
+                                <img src={img} alt={`${product.name} view ${i + 2}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Product intro */}
+                        <div className="mb-8">
+                          <h3 className="font-heading font-extrabold text-xl text-slate-900 mb-3 flex items-center gap-2">
+                            <span className="w-1 h-6 bg-primary rounded-full inline-block" />
+                            About This Product
+                          </h3>
+                          <p className="text-slate-600 text-sm leading-relaxed mb-3">
+                            The <strong className="text-slate-900">SAFE E18KINV Intelligent Inverter Split Air Conditioner (1.5 Ton)</strong> is engineered for the modern Bangladeshi home — delivering powerful, whisper-quiet cooling with exceptional energy savings. Powered by advanced DC inverter compressor technology, it adjusts its speed continuously to maintain your set temperature without consuming excess electricity.
+                          </p>
+                          <p className="text-slate-600 text-sm leading-relaxed">
+                            Whether you're cooling a bedroom, living room, or office space up to 200 sq ft, this unit provides rapid and consistent climate control year-round. Its multi-stage air purification system filters dust, allergens, and bacteria — so the air you breathe is always clean and fresh.
+                          </p>
+                        </div>
+
+                        {/* Key Features */}
+                        <div className="mb-8">
+                          <h3 className="font-heading font-extrabold text-lg text-slate-900 mb-4 flex items-center gap-2">
+                            <span className="w-1 h-6 bg-emerald-500 rounded-full inline-block" />
+                            Key Features
+                          </h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {[
+                              { icon: "⚡", title: "DC Inverter Compressor", desc: "Adjusts speed automatically — saves up to 60% electricity vs fixed-speed ACs." },
+                              { icon: "🔇", title: "Ultra-Quiet Operation", desc: "As low as 22 dB indoor noise level — you'll barely know it's running." },
+                              { icon: "🌿", title: "Eco-Friendly Refrigerant", desc: "Uses R-32 refrigerant with lower global warming potential (GWP)." },
+                              { icon: "🛡️", title: "5-Year Compressor Warranty", desc: "SAFE backs the compressor with a full 5-year manufacturer warranty." },
+                              { icon: "💨", title: "4-Way Auto Airflow", desc: "Horizontal and vertical auto-swing distributes cool air evenly across the room." },
+                              { icon: "🧹", title: "Auto Self-Cleaning", desc: "Automatically dries and cleans the evaporator after use to prevent mold build-up." },
+                              { icon: "📡", title: "Wi-Fi Ready", desc: "Optional Wi-Fi module for smartphone control from anywhere." },
+                              { icon: "🌙", title: "Sleep Mode", desc: "Gradually adjusts temperature for comfortable all-night sleeping without disturbance." },
+                            ].map((f, i) => (
+                              <div key={i} className="flex gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-primary/20 hover:bg-primary/5 transition-all">
+                                <span className="text-xl shrink-0">{f.icon}</span>
+                                <div>
+                                  <p className="text-sm font-bold text-slate-900 mb-0.5">{f.title}</p>
+                                  <p className="text-[12px] text-slate-500 leading-snug">{f.desc}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Image + detail section 1 */}
+                        <div className="flex flex-col md:flex-row gap-6 mb-8 items-center">
+                          <div className="md:w-2/5 rounded-2xl overflow-hidden bg-slate-100 aspect-[4/3] shrink-0">
+                            <img src={product.images[1]} alt="Cooling Technology" className="w-full h-full object-cover" />
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-heading font-extrabold text-base text-slate-900 mb-2">Advanced Inverter Cooling Technology</h4>
+                            <p className="text-sm text-slate-600 leading-relaxed mb-3">
+                              Unlike conventional air conditioners that switch their compressor on and off repeatedly, the SAFE E18KINV runs its inverter compressor at variable speeds. This means it reaches your desired temperature faster and holds it steadier — all while consuming significantly less power.
+                            </p>
+                            <p className="text-sm text-slate-600 leading-relaxed">
+                              The unit also includes a <strong className="text-slate-800">Turbo Cool</strong> mode that blasts maximum airflow for rapid cooldown, and automatically transitions to a quiet, efficient mode once the target temperature is achieved.
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Image + detail section 2 (reversed) */}
+                        <div className="flex flex-col md:flex-row-reverse gap-6 mb-8 items-center">
+                          <div className="md:w-2/5 rounded-2xl overflow-hidden bg-slate-100 aspect-[4/3] shrink-0">
+                            <img src={product.images[2]} alt="Air Purification" className="w-full h-full object-cover" />
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-heading font-extrabold text-base text-slate-900 mb-2">Multi-Stage Air Purification</h4>
+                            <p className="text-sm text-slate-600 leading-relaxed mb-3">
+                              Breathe cleaner air every day. The built-in multi-layer filtration system captures PM2.5 fine dust particles, pollen, pet dander, and common household bacteria. The washable filter is easy to maintain and maintains its effectiveness for years.
+                            </p>
+                            <p className="text-sm text-slate-600 leading-relaxed">
+                              The <strong className="text-slate-800">Auto Self-Clean</strong> function dries out the indoor unit's evaporator after each cooling session, preventing mold and bacterial growth — keeping your air fresh and the unit performing at its best.
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* What's in the box */}
+                        <div className="mb-8 p-5 bg-amber-50 border border-amber-100 rounded-2xl">
+                          <h3 className="font-heading font-extrabold text-base text-slate-900 mb-4 flex items-center gap-2">
+                            <span className="text-lg">📦</span> What's in the Box
+                          </h3>
+                          <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            {[
+                              "1 × Indoor Unit (SAFE E18KINV)",
+                              "1 × Outdoor Unit with Compressor",
+                              "1 × Remote Control (with batteries)",
+                              "1 × User Manual (English & Bengali)",
+                              "1 × Warranty Card",
+                              "Installation Pipe & Fittings (if free installation selected)",
+                            ].map((item, i) => (
+                              <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        {/* Room size guide */}
+                        <div className="mb-8">
+                          <h3 className="font-heading font-extrabold text-base text-slate-900 mb-4 flex items-center gap-2">
+                            <span className="w-1 h-5 bg-blue-500 rounded-full inline-block" />
+                            Room Size Compatibility Guide
+                          </h3>
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-sm border-collapse">
+                              <thead>
+                                <tr className="bg-slate-900 text-white">
+                                  <th className="py-2.5 px-4 text-left font-bold rounded-tl-lg text-[12px]">AC Capacity</th>
+                                  <th className="py-2.5 px-4 text-left font-bold text-[12px]">Room Size</th>
+                                  <th className="py-2.5 px-4 text-left font-bold text-[12px]">Ideal For</th>
+                                  <th className="py-2.5 px-4 text-left font-bold rounded-tr-lg text-[12px]">Suitability</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {[
+                                  { cap: "1.0 Ton", size: "Up to 120 sq ft", use: "Small bedroom, study room", match: false },
+                                  { cap: "1.5 Ton ✓", size: "120 – 200 sq ft", use: "Standard bedroom, small living room", match: true },
+                                  { cap: "2.0 Ton", size: "200 – 280 sq ft", use: "Large bedroom, medium living room", match: false },
+                                  { cap: "2.5 Ton", size: "280 – 350 sq ft", use: "Large hall, open plan area", match: false },
+                                ].map((row, i) => (
+                                  <tr key={i} className={`border-b border-slate-100 ${row.match ? "bg-primary/5 font-semibold" : i % 2 === 0 ? "bg-slate-50" : "bg-white"}`}>
+                                    <td className={`py-2.5 px-4 text-[13px] ${row.match ? "text-primary font-extrabold" : "text-slate-700"}`}>{row.cap}</td>
+                                    <td className="py-2.5 px-4 text-[13px] text-slate-700">{row.size}</td>
+                                    <td className="py-2.5 px-4 text-[13px] text-slate-600">{row.use}</td>
+                                    <td className="py-2.5 px-4">
+                                      {row.match
+                                        ? <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">Best Match</span>
+                                        : <span className="text-[11px] text-slate-400">—</span>
+                                      }
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+
+                        {/* Seller facilities */}
+                        <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Sold & Fulfilled by: {active.name}</p>
                           <div className="flex flex-wrap gap-2">
                             {active.facilities.map((f, i) => {
                               const FIcon = f.icon;
