@@ -74,7 +74,7 @@ export default function Checkout() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Main Content Area (Left) */}
-        <div className="lg:col-span-8">
+        <div className="lg:col-span-7">
           
           {/* STEP 1: ADDRESS */}
           {currentStep === 1 && (
@@ -511,7 +511,7 @@ export default function Checkout() {
 
         {/* Order Summary Sidebar (Right) */}
         {currentStep < 4 && (
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-5">
              <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 sticky top-24">
                 <h3 className="font-heading font-extrabold text-lg text-slate-900 mb-6">Order summary</h3>
                 
