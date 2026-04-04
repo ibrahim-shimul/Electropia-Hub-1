@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Trash2, Minus, Plus, ShoppingCart, Users, Clock, ToggleLeft, ToggleRight, Store, Layers } from "lucide-react";
+import { Trash2, Minus, Plus, ShoppingCart, Users, Clock, ToggleLeft, ToggleRight, Store, Layers, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -42,6 +42,24 @@ const MULTI_SHOP_CART_INITIAL = [
         quantity: 4,
         image: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&q=80&w=100",
         selected: true,
+      },
+      {
+        id: "item-addon-1",
+        type: "normal" as const,
+        name: 'Samsung 65" QLED 4K Smart TV (QN65Q80C)',
+        details: "Smart TV, 4K QLED, Quantum Processor, HDR10+",
+        sku: "SM-QN65Q80C",
+        stock: 18,
+        originalPrice: 145000,
+        price: 119000,
+        quantity: 1,
+        image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&q=80&w=100",
+        selected: true,
+        addOns: [
+          { id: "ao-1", name: "Professional Wall Mount Installation", price: 1800, selected: true },
+          { id: "ao-2", name: "2-Year Extended Warranty (Samsung Care+)", price: 3500, selected: true },
+          { id: "ao-3", name: "Premium HDMI 2.1 Cable (2m)", price: 450, selected: true },
+        ],
       },
       {
         id: "gd-1",
@@ -171,6 +189,24 @@ const SINGLE_SHOP_CART_INITIAL = {
       quantity: 1,
       image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&q=80&w=100",
       selected: false,
+    },
+    {
+      id: "s-item-addon",
+      type: "normal" as const,
+      name: 'Samsung 65" QLED 4K Smart TV (QN65Q80C)',
+      details: "Smart TV, 4K QLED, Quantum Processor, HDR10+",
+      sku: "SM-QN65Q80C",
+      stock: 18,
+      originalPrice: 145000,
+      price: 119000,
+      quantity: 1,
+      image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&q=80&w=100",
+      selected: true,
+      addOns: [
+        { id: "sao-1", name: "Professional Wall Mount Installation", price: 1800, selected: true },
+        { id: "sao-2", name: "2-Year Extended Warranty (Samsung Care+)", price: 3500, selected: true },
+        { id: "sao-3", name: "Premium HDMI 2.1 Cable (2m)", price: 450, selected: true },
+      ],
     },
   ],
   groupDealItems: [
@@ -336,6 +372,13 @@ export default function Cart() {
       ...store, items: store.items.filter(item => item.id !== itemId)
     }).filter(store => store.items.length > 0));
   };
+  const multiHandleDeleteAddon = (storeId: string, itemId: string, addonId: string) => {
+    setMultiCart(prev => prev.map(store => store.storeId !== storeId ? store : {
+      ...store, items: store.items.map(item => item.id !== itemId ? item : {
+        ...item, addOns: (item as any).addOns?.filter((a: any) => a.id !== addonId)
+      })
+    }));
+  };
 
   // ── Single-shop handlers ──
   const singleHandleQtyChange = (itemId: string, change: number) => {
@@ -359,6 +402,14 @@ export default function Cart() {
   };
   const singleHandleDeleteGd = (itemId: string) => {
     setSingleStore(prev => ({ ...prev, groupDealItems: prev.groupDealItems.filter(i => i.id !== itemId) }));
+  };
+  const singleHandleDeleteAddon = (itemId: string, addonId: string) => {
+    setSingleStore(prev => ({
+      ...prev,
+      items: prev.items.map(item => item.id !== itemId ? item : {
+        ...item, addOns: (item as any).addOns?.filter((a: any) => a.id !== addonId)
+      })
+    }));
   };
 
   // ── Multi-shop calculations ──
@@ -471,34 +522,67 @@ export default function Cart() {
                     </div>
 
                     {/* Normal Items */}
-                    {normalItems.map(item => (
-                      <div key={item.id} className="grid grid-cols-12 gap-4 p-4 border-t border-slate-100 items-center">
-                        <div className="col-span-6 flex gap-4">
-                          <div className="pt-1"><Checkbox checked={item.selected} onCheckedChange={(c) => multiHandleItemSelect(store.storeId, item.id, c as boolean)} className="data-[state=checked]:bg-[#6c2bd9] data-[state=checked]:border-[#6c2bd9]" /></div>
-                          <div className="w-16 h-16 bg-slate-50 rounded border border-slate-100 p-1 shrink-0"><img src={item.image} alt={item.name} className="w-full h-full object-contain mix-blend-multiply" /></div>
-                          <div className="flex flex-col">
-                            <h4 className="font-bold text-[13px] text-slate-900 leading-snug line-clamp-2 hover:text-[#6c2bd9] cursor-pointer">{item.name}</h4>
-                            <p className="text-[11px] text-slate-500 mt-1 line-clamp-1">{item.details}</p>
-                            <p className="text-[10px] text-slate-400 mt-0.5">SKU: {item.sku} • Stock: {item.stock} pcs</p>
+                    {normalItems.map(item => {
+                      const addOns = (item as any).addOns as {id:string;name:string;price:number}[] | undefined;
+                      const addOnTotal = addOns?.reduce((s, a) => s + a.price, 0) ?? 0;
+                      return (
+                        <div key={item.id}>
+                          <div className="grid grid-cols-12 gap-4 p-4 border-t border-slate-100 items-center">
+                            <div className="col-span-6 flex gap-4">
+                              <div className="pt-1"><Checkbox checked={item.selected} onCheckedChange={(c) => multiHandleItemSelect(store.storeId, item.id, c as boolean)} className="data-[state=checked]:bg-[#6c2bd9] data-[state=checked]:border-[#6c2bd9]" /></div>
+                              <div className="w-16 h-16 bg-slate-50 rounded border border-slate-100 p-1 shrink-0"><img src={item.image} alt={item.name} className="w-full h-full object-contain mix-blend-multiply" /></div>
+                              <div className="flex flex-col">
+                                <h4 className="font-bold text-[13px] text-slate-900 leading-snug line-clamp-2 hover:text-[#6c2bd9] cursor-pointer">{item.name}</h4>
+                                <p className="text-[11px] text-slate-500 mt-1 line-clamp-1">{item.details}</p>
+                                <p className="text-[10px] text-slate-400 mt-0.5">SKU: {item.sku} • Stock: {item.stock} pcs</p>
+                                {addOns && addOns.length > 0 && (
+                                  <span className="text-[10px] text-emerald-600 font-bold mt-1">+ {addOns.length} Add-On(s) included</span>
+                                )}
+                              </div>
+                            </div>
+                            <div className="col-span-2 text-center flex flex-col justify-center">
+                              {item.originalPrice > item.price && <span className="text-[11px] text-slate-400 line-through">Tk {item.originalPrice.toLocaleString()}</span>}
+                              <span className="font-extrabold text-slate-900">Tk {item.price.toLocaleString()}</span>
+                              {addOnTotal > 0 && <span className="text-[10px] text-emerald-600 font-semibold">+Tk {addOnTotal.toLocaleString()} add-ons</span>}
+                            </div>
+                            <div className="col-span-2 flex justify-center">
+                              <div className="flex items-center border border-slate-200 rounded h-8 w-24">
+                                <button onClick={() => multiHandleQtyChange(store.storeId, item.id, -1)} className="w-8 h-full flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-colors"><Minus className="w-3 h-3" /></button>
+                                <div className="flex-1 flex items-center justify-center font-bold text-sm text-slate-900 border-x border-slate-200 h-full">{item.quantity}</div>
+                                <button onClick={() => multiHandleQtyChange(store.storeId, item.id, 1)} className="w-8 h-full flex items-center justify-center text-white bg-[#6c2bd9] hover:bg-[#5821b0] transition-colors"><Plus className="w-3 h-3" /></button>
+                              </div>
+                            </div>
+                            <div className="col-span-2 flex items-center justify-end gap-3 pr-2">
+                              <div className="text-right">
+                                <div className="font-extrabold text-slate-900">Tk {(item.price * item.quantity).toLocaleString()}</div>
+                                {addOnTotal > 0 && <div className="text-[10px] text-emerald-600 font-semibold">+Tk {addOnTotal.toLocaleString()}</div>}
+                              </div>
+                              <button onClick={() => multiHandleDelete(store.storeId, item.id)} className="text-slate-300 hover:text-rose-500 transition-colors p-1"><Trash2 className="w-4 h-4" /></button>
+                            </div>
                           </div>
+                          {/* Add-On sub-rows */}
+                          {addOns && addOns.length > 0 && (
+                            <div className="border-t border-emerald-100 bg-emerald-50/40 px-4 py-2 space-y-1.5">
+                              <p className="text-[10px] font-extrabold text-emerald-700 uppercase tracking-wide flex items-center gap-1.5 mb-1"><Wrench className="w-3 h-3" /> Add-On Services & Products</p>
+                              {addOns.map(addon => (
+                                <div key={addon.id} className="grid grid-cols-12 gap-4 items-center py-1 px-2 bg-white/60 rounded-lg border border-emerald-100">
+                                  <div className="col-span-6 flex items-center gap-2 pl-10">
+                                    <span className="text-[9px] font-black bg-emerald-600 text-white px-1.5 py-0.5 rounded tracking-wide shrink-0">ADD-ON</span>
+                                    <span className="text-[12px] text-slate-700 font-medium">{addon.name}</span>
+                                  </div>
+                                  <div className="col-span-2 text-center text-[12px] font-semibold text-emerald-700">Tk {addon.price.toLocaleString()}</div>
+                                  <div className="col-span-2 text-center text-[11px] text-slate-400">Qty: 1</div>
+                                  <div className="col-span-2 flex items-center justify-end gap-2 pr-2">
+                                    <span className="font-bold text-[12px] text-emerald-700">Tk {addon.price.toLocaleString()}</span>
+                                    <button onClick={() => multiHandleDeleteAddon(store.storeId, item.id, addon.id)} className="text-slate-300 hover:text-rose-500 transition-colors p-1"><Trash2 className="w-3.5 h-3.5" /></button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                        <div className="col-span-2 text-center flex flex-col justify-center">
-                          {item.originalPrice > item.price && <span className="text-[11px] text-slate-400 line-through">Tk {item.originalPrice.toLocaleString()}</span>}
-                          <span className="font-extrabold text-slate-900">Tk {item.price.toLocaleString()}</span>
-                        </div>
-                        <div className="col-span-2 flex justify-center">
-                          <div className="flex items-center border border-slate-200 rounded h-8 w-24">
-                            <button onClick={() => multiHandleQtyChange(store.storeId, item.id, -1)} className="w-8 h-full flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-colors"><Minus className="w-3 h-3" /></button>
-                            <div className="flex-1 flex items-center justify-center font-bold text-sm text-slate-900 border-x border-slate-200 h-full">{item.quantity}</div>
-                            <button onClick={() => multiHandleQtyChange(store.storeId, item.id, 1)} className="w-8 h-full flex items-center justify-center text-white bg-[#6c2bd9] hover:bg-[#5821b0] transition-colors"><Plus className="w-3 h-3" /></button>
-                          </div>
-                        </div>
-                        <div className="col-span-2 flex items-center justify-end gap-3 pr-2">
-                          <span className="font-extrabold text-slate-900">Tk {(item.price * item.quantity).toLocaleString()}</span>
-                          <button onClick={() => multiHandleDelete(store.storeId, item.id)} className="text-slate-300 hover:text-rose-500 transition-colors p-1"><Trash2 className="w-4 h-4" /></button>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
 
                     {/* Group Deal Items */}
                     {groupDealItems.length > 0 && (
@@ -614,34 +698,67 @@ export default function Cart() {
               </div>
 
               {/* Normal Items */}
-              {singleStore.items.map(item => (
-                <div key={item.id} className="grid grid-cols-12 gap-4 p-4 border-t border-slate-100 items-center">
-                  <div className="col-span-6 flex gap-4">
-                    <div className="pt-1"><Checkbox checked={item.selected} onCheckedChange={(c) => singleHandleItemSelect(item.id, c as boolean)} className="data-[state=checked]:bg-[#6c2bd9] data-[state=checked]:border-[#6c2bd9]" /></div>
-                    <div className="w-16 h-16 bg-slate-50 rounded border border-slate-100 p-1 shrink-0"><img src={item.image} alt={item.name} className="w-full h-full object-contain mix-blend-multiply" /></div>
-                    <div className="flex flex-col">
-                      <h4 className="font-bold text-[13px] text-slate-900 leading-snug line-clamp-2 hover:text-[#6c2bd9] cursor-pointer">{item.name}</h4>
-                      <p className="text-[11px] text-slate-500 mt-1 line-clamp-1">{item.details}</p>
-                      <p className="text-[10px] text-slate-400 mt-0.5">SKU: {item.sku} • Stock: {item.stock} pcs</p>
+              {singleStore.items.map(item => {
+                const addOns = (item as any).addOns as {id:string;name:string;price:number}[] | undefined;
+                const addOnTotal = addOns?.reduce((s, a) => s + a.price, 0) ?? 0;
+                return (
+                  <div key={item.id}>
+                    <div className="grid grid-cols-12 gap-4 p-4 border-t border-slate-100 items-center">
+                      <div className="col-span-6 flex gap-4">
+                        <div className="pt-1"><Checkbox checked={item.selected} onCheckedChange={(c) => singleHandleItemSelect(item.id, c as boolean)} className="data-[state=checked]:bg-[#6c2bd9] data-[state=checked]:border-[#6c2bd9]" /></div>
+                        <div className="w-16 h-16 bg-slate-50 rounded border border-slate-100 p-1 shrink-0"><img src={item.image} alt={item.name} className="w-full h-full object-contain mix-blend-multiply" /></div>
+                        <div className="flex flex-col">
+                          <h4 className="font-bold text-[13px] text-slate-900 leading-snug line-clamp-2 hover:text-[#6c2bd9] cursor-pointer">{item.name}</h4>
+                          <p className="text-[11px] text-slate-500 mt-1 line-clamp-1">{item.details}</p>
+                          <p className="text-[10px] text-slate-400 mt-0.5">SKU: {item.sku} • Stock: {item.stock} pcs</p>
+                          {addOns && addOns.length > 0 && (
+                            <span className="text-[10px] text-emerald-600 font-bold mt-1">+ {addOns.length} Add-On(s) included</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="col-span-2 text-center flex flex-col justify-center">
+                        {item.originalPrice > item.price && <span className="text-[11px] text-slate-400 line-through">Tk {item.originalPrice.toLocaleString()}</span>}
+                        <span className="font-extrabold text-slate-900">Tk {item.price.toLocaleString()}</span>
+                        {addOnTotal > 0 && <span className="text-[10px] text-emerald-600 font-semibold">+Tk {addOnTotal.toLocaleString()} add-ons</span>}
+                      </div>
+                      <div className="col-span-2 flex justify-center">
+                        <div className="flex items-center border border-slate-200 rounded h-8 w-24">
+                          <button onClick={() => singleHandleQtyChange(item.id, -1)} className="w-8 h-full flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-colors"><Minus className="w-3 h-3" /></button>
+                          <div className="flex-1 flex items-center justify-center font-bold text-sm text-slate-900 border-x border-slate-200 h-full">{item.quantity}</div>
+                          <button onClick={() => singleHandleQtyChange(item.id, 1)} className="w-8 h-full flex items-center justify-center text-white bg-[#6c2bd9] hover:bg-[#5821b0] transition-colors"><Plus className="w-3 h-3" /></button>
+                        </div>
+                      </div>
+                      <div className="col-span-2 flex items-center justify-end gap-3 pr-2">
+                        <div className="text-right">
+                          <div className="font-extrabold text-slate-900">Tk {(item.price * item.quantity).toLocaleString()}</div>
+                          {addOnTotal > 0 && <div className="text-[10px] text-emerald-600 font-semibold">+Tk {addOnTotal.toLocaleString()}</div>}
+                        </div>
+                        <button onClick={() => singleHandleDeleteItem(item.id)} className="text-slate-300 hover:text-rose-500 transition-colors p-1"><Trash2 className="w-4 h-4" /></button>
+                      </div>
                     </div>
+                    {/* Add-On sub-rows */}
+                    {addOns && addOns.length > 0 && (
+                      <div className="border-t border-emerald-100 bg-emerald-50/40 px-4 py-2 space-y-1.5">
+                        <p className="text-[10px] font-extrabold text-emerald-700 uppercase tracking-wide flex items-center gap-1.5 mb-1"><Wrench className="w-3 h-3" /> Add-On Services & Products</p>
+                        {addOns.map(addon => (
+                          <div key={addon.id} className="grid grid-cols-12 gap-4 items-center py-1 px-2 bg-white/60 rounded-lg border border-emerald-100">
+                            <div className="col-span-6 flex items-center gap-2 pl-10">
+                              <span className="text-[9px] font-black bg-emerald-600 text-white px-1.5 py-0.5 rounded tracking-wide shrink-0">ADD-ON</span>
+                              <span className="text-[12px] text-slate-700 font-medium">{addon.name}</span>
+                            </div>
+                            <div className="col-span-2 text-center text-[12px] font-semibold text-emerald-700">Tk {addon.price.toLocaleString()}</div>
+                            <div className="col-span-2 text-center text-[11px] text-slate-400">Qty: 1</div>
+                            <div className="col-span-2 flex items-center justify-end gap-2 pr-2">
+                              <span className="font-bold text-[12px] text-emerald-700">Tk {addon.price.toLocaleString()}</span>
+                              <button onClick={() => singleHandleDeleteAddon(item.id, addon.id)} className="text-slate-300 hover:text-rose-500 transition-colors p-1"><Trash2 className="w-3.5 h-3.5" /></button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <div className="col-span-2 text-center flex flex-col justify-center">
-                    {item.originalPrice > item.price && <span className="text-[11px] text-slate-400 line-through">Tk {item.originalPrice.toLocaleString()}</span>}
-                    <span className="font-extrabold text-slate-900">Tk {item.price.toLocaleString()}</span>
-                  </div>
-                  <div className="col-span-2 flex justify-center">
-                    <div className="flex items-center border border-slate-200 rounded h-8 w-24">
-                      <button onClick={() => singleHandleQtyChange(item.id, -1)} className="w-8 h-full flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-colors"><Minus className="w-3 h-3" /></button>
-                      <div className="flex-1 flex items-center justify-center font-bold text-sm text-slate-900 border-x border-slate-200 h-full">{item.quantity}</div>
-                      <button onClick={() => singleHandleQtyChange(item.id, 1)} className="w-8 h-full flex items-center justify-center text-white bg-[#6c2bd9] hover:bg-[#5821b0] transition-colors"><Plus className="w-3 h-3" /></button>
-                    </div>
-                  </div>
-                  <div className="col-span-2 flex items-center justify-end gap-3 pr-2">
-                    <span className="font-extrabold text-slate-900">Tk {(item.price * item.quantity).toLocaleString()}</span>
-                    <button onClick={() => singleHandleDeleteItem(item.id)} className="text-slate-300 hover:text-rose-500 transition-colors p-1"><Trash2 className="w-4 h-4" /></button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
 
               {/* Group Deal Items Section */}
               {singleStore.groupDealItems.length > 0 && (
