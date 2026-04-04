@@ -562,22 +562,44 @@ export default function Cart() {
                           </div>
                           {/* Add-On sub-rows */}
                           {addOns && addOns.length > 0 && (
-                            <div className="border-t border-emerald-100 bg-emerald-50/40 px-4 py-2 space-y-1.5">
-                              <p className="text-[10px] font-extrabold text-emerald-700 uppercase tracking-wide flex items-center gap-1.5 mb-1"><Wrench className="w-3 h-3" /> Add-On Services & Products</p>
-                              {addOns.map(addon => (
-                                <div key={addon.id} className="grid grid-cols-12 gap-4 items-center py-1 px-2 bg-white/60 rounded-lg border border-emerald-100">
-                                  <div className="col-span-6 flex items-center gap-2 pl-10">
-                                    <span className="text-[9px] font-black bg-emerald-600 text-white px-1.5 py-0.5 rounded tracking-wide shrink-0">ADD-ON</span>
-                                    <span className="text-[12px] text-slate-700 font-medium">{addon.name}</span>
+                            <div className="mx-4 mb-3 rounded-xl border border-emerald-200 overflow-hidden shadow-sm">
+                              {/* Header */}
+                              <div className="bg-gradient-to-r from-emerald-600 to-emerald-500 px-4 py-2.5 flex items-center gap-2">
+                                <div className="w-5 h-5 bg-white/20 rounded flex items-center justify-center">
+                                  <Wrench className="w-3 h-3 text-white" />
+                                </div>
+                                <span className="text-[11px] font-black text-white uppercase tracking-widest">Add-On Services & Products</span>
+                                <span className="ml-auto text-[10px] bg-white/25 text-white px-2 py-0.5 rounded-full font-bold">{addOns.length} item{addOns.length > 1 ? "s" : ""}</span>
+                              </div>
+                              {/* Rows */}
+                              {addOns.map((addon, idx) => (
+                                <div key={addon.id} className={`flex items-center gap-3 px-4 py-3 bg-white group hover:bg-emerald-50/40 transition-colors ${idx < addOns.length - 1 ? "border-b border-emerald-100" : ""}`}>
+                                  <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                                    <Wrench className="w-3.5 h-3.5 text-emerald-700" />
                                   </div>
-                                  <div className="col-span-2 text-center text-[12px] font-semibold text-emerald-700">Tk {addon.price.toLocaleString()}</div>
-                                  <div className="col-span-2 text-center text-[11px] text-slate-400">Qty: 1</div>
-                                  <div className="col-span-2 flex items-center justify-end gap-2 pr-2">
-                                    <span className="font-bold text-[12px] text-emerald-700">Tk {addon.price.toLocaleString()}</span>
-                                    <button onClick={() => multiHandleDeleteAddon(store.storeId, item.id, addon.id)} className="text-slate-300 hover:text-rose-500 transition-colors p-1"><Trash2 className="w-3.5 h-3.5" /></button>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      <span className="text-[9px] font-black bg-emerald-600 text-white px-2 py-0.5 rounded-full tracking-wide shrink-0">ADD-ON</span>
+                                      <span className="text-[13px] text-slate-800 font-semibold leading-tight">{addon.name}</span>
+                                    </div>
+                                    <p className="text-[10px] text-slate-400 mt-0.5">Qty: 1 · Service / Product</p>
                                   </div>
+                                  <div className="text-right shrink-0">
+                                    <div className="font-extrabold text-[14px] text-emerald-700">+Tk {addon.price.toLocaleString()}</div>
+                                  </div>
+                                  <button
+                                    onClick={() => multiHandleDeleteAddon(store.storeId, item.id, addon.id)}
+                                    className="shrink-0 text-slate-200 hover:text-rose-500 transition-colors opacity-0 group-hover:opacity-100 p-1"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
                                 </div>
                               ))}
+                              {/* Footer total */}
+                              <div className="px-4 py-2 bg-emerald-50 border-t border-emerald-100 flex items-center justify-between">
+                                <span className="text-[11px] text-emerald-700 font-bold flex items-center gap-1"><Wrench className="w-3 h-3" /> Add-On Total</span>
+                                <span className="text-[13px] font-extrabold text-emerald-700">+Tk {addOnTotal.toLocaleString()}</span>
+                              </div>
                             </div>
                           )}
                         </div>
@@ -738,22 +760,44 @@ export default function Cart() {
                     </div>
                     {/* Add-On sub-rows */}
                     {addOns && addOns.length > 0 && (
-                      <div className="border-t border-emerald-100 bg-emerald-50/40 px-4 py-2 space-y-1.5">
-                        <p className="text-[10px] font-extrabold text-emerald-700 uppercase tracking-wide flex items-center gap-1.5 mb-1"><Wrench className="w-3 h-3" /> Add-On Services & Products</p>
-                        {addOns.map(addon => (
-                          <div key={addon.id} className="grid grid-cols-12 gap-4 items-center py-1 px-2 bg-white/60 rounded-lg border border-emerald-100">
-                            <div className="col-span-6 flex items-center gap-2 pl-10">
-                              <span className="text-[9px] font-black bg-emerald-600 text-white px-1.5 py-0.5 rounded tracking-wide shrink-0">ADD-ON</span>
-                              <span className="text-[12px] text-slate-700 font-medium">{addon.name}</span>
+                      <div className="mx-4 mb-3 rounded-xl border border-emerald-200 overflow-hidden shadow-sm">
+                        {/* Header */}
+                        <div className="bg-gradient-to-r from-emerald-600 to-emerald-500 px-4 py-2.5 flex items-center gap-2">
+                          <div className="w-5 h-5 bg-white/20 rounded flex items-center justify-center">
+                            <Wrench className="w-3 h-3 text-white" />
+                          </div>
+                          <span className="text-[11px] font-black text-white uppercase tracking-widest">Add-On Services & Products</span>
+                          <span className="ml-auto text-[10px] bg-white/25 text-white px-2 py-0.5 rounded-full font-bold">{addOns.length} item{addOns.length > 1 ? "s" : ""}</span>
+                        </div>
+                        {/* Rows */}
+                        {addOns.map((addon, idx) => (
+                          <div key={addon.id} className={`flex items-center gap-3 px-4 py-3 bg-white group hover:bg-emerald-50/40 transition-colors ${idx < addOns.length - 1 ? "border-b border-emerald-100" : ""}`}>
+                            <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                              <Wrench className="w-3.5 h-3.5 text-emerald-700" />
                             </div>
-                            <div className="col-span-2 text-center text-[12px] font-semibold text-emerald-700">Tk {addon.price.toLocaleString()}</div>
-                            <div className="col-span-2 text-center text-[11px] text-slate-400">Qty: 1</div>
-                            <div className="col-span-2 flex items-center justify-end gap-2 pr-2">
-                              <span className="font-bold text-[12px] text-emerald-700">Tk {addon.price.toLocaleString()}</span>
-                              <button onClick={() => singleHandleDeleteAddon(item.id, addon.id)} className="text-slate-300 hover:text-rose-500 transition-colors p-1"><Trash2 className="w-3.5 h-3.5" /></button>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-[9px] font-black bg-emerald-600 text-white px-2 py-0.5 rounded-full tracking-wide shrink-0">ADD-ON</span>
+                                <span className="text-[13px] text-slate-800 font-semibold leading-tight">{addon.name}</span>
+                              </div>
+                              <p className="text-[10px] text-slate-400 mt-0.5">Qty: 1 · Service / Product</p>
                             </div>
+                            <div className="text-right shrink-0">
+                              <div className="font-extrabold text-[14px] text-emerald-700">+Tk {addon.price.toLocaleString()}</div>
+                            </div>
+                            <button
+                              onClick={() => singleHandleDeleteAddon(item.id, addon.id)}
+                              className="shrink-0 text-slate-200 hover:text-rose-500 transition-colors opacity-0 group-hover:opacity-100 p-1"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </div>
                         ))}
+                        {/* Footer total */}
+                        <div className="px-4 py-2 bg-emerald-50 border-t border-emerald-100 flex items-center justify-between">
+                          <span className="text-[11px] text-emerald-700 font-bold flex items-center gap-1"><Wrench className="w-3 h-3" /> Add-On Total</span>
+                          <span className="text-[13px] font-extrabold text-emerald-700">+Tk {addOnTotal.toLocaleString()}</span>
+                        </div>
                       </div>
                     )}
                   </div>
