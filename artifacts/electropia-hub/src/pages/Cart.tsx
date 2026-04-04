@@ -415,12 +415,17 @@ export default function Cart() {
   // ── Multi-shop calculations ──
   const multiAllSelected = multiCart.every(s => s.items.every(i => i.selected)) && multiCart.length > 0;
   const multiTotalItems = multiCart.reduce((a, s) => a + s.items.length, 0);
+  const getItemAddonTotal = (item: any) =>
+    (item.addOns as {price:number}[] | undefined)?.reduce((s, a) => s + a.price, 0) ?? 0;
+
   const multiSelectedStores = multiCart.map(store => {
     const selectedItems = store.items.filter(i => i.selected);
-    const storeSubtotal = selectedItems.reduce((a, i) => a + i.price * i.quantity, 0);
+    const storeSubtotal = selectedItems.reduce((a, i) => a + i.price * i.quantity + getItemAddonTotal(i), 0);
     return { ...store, selectedItems, storeSubtotal, hasSelected: selectedItems.length > 0 };
   }).filter(s => s.hasSelected);
   const multiProductTotal = multiSelectedStores.reduce((a, s) => a + s.storeSubtotal, 0);
+  const multiAddonTotal = multiSelectedStores.reduce((a, s) =>
+    a + s.selectedItems.reduce((b, i) => b + getItemAddonTotal(i), 0), 0);
   const multiShipping = multiSelectedStores.reduce((a, s) => a + s.shippingCharge, 0);
   const multiPayable = multiProductTotal + multiShipping - appliedDiscount;
 
@@ -429,7 +434,8 @@ export default function Cart() {
   const singleGdSelected = singleStore.groupDealItems.filter(i => i.selected);
   const singleAllSelected = singleStore.items.every(i => i.selected) && singleStore.groupDealItems.every(i => i.selected);
   const singleTotalItems = singleStore.items.length + singleStore.groupDealItems.length;
-  const singleNormalTotal = singleNormalSelected.reduce((a, i) => a + i.price * i.quantity, 0);
+  const singleNormalTotal = singleNormalSelected.reduce((a, i) => a + i.price * i.quantity + getItemAddonTotal(i), 0);
+  const singleAddonTotal = singleNormalSelected.reduce((a, i) => a + getItemAddonTotal(i), 0);
   const singleGdTotal = singleGdSelected.reduce((a, i) => a + i.groupDeal.deposit, 0);
   const singleProductTotal = singleNormalTotal + singleGdTotal;
   const singlePayable = singleProductTotal + singleStore.shippingCharge - appliedDiscount;
@@ -671,6 +677,7 @@ export default function Cart() {
               address: s.shippingAddress, shippingCharge: s.shippingCharge, subtotal: s.storeSubtotal,
             }))}
             productTotal={multiProductTotal}
+            addonTotal={multiAddonTotal}
             shippingTotal={multiShipping}
             itemCount={multiSelectedStores.reduce((a, s) => a + s.selectedItems.length, 0)}
             onCheckout={() => setLocation("/checkout")}
@@ -852,6 +859,7 @@ export default function Cart() {
               address: singleStore.shippingAddress, shippingCharge: singleStore.shippingCharge, subtotal: singleProductTotal,
             }]}
             productTotal={singleProductTotal}
+            addonTotal={singleAddonTotal}
             shippingTotal={singleStore.shippingCharge}
             itemCount={singleNormalSelected.length + singleGdSelected.length}
             onCheckout={() => setLocation("/checkout")}
@@ -867,6 +875,7 @@ export default function Cart() {
 function CartTotalsSidebar({
   storeBreakdowns,
   productTotal,
+  addonTotal = 0,
   shippingTotal,
   itemCount,
   onCheckout,
@@ -874,6 +883,7 @@ function CartTotalsSidebar({
 }: {
   storeBreakdowns: { storeName: string; rating: number; reviews: number; address: string; shippingCharge: number; subtotal: number }[];
   productTotal: number;
+  addonTotal?: number;
   shippingTotal: number;
   itemCount: number;
   onCheckout: () => void;
@@ -883,6 +893,7 @@ function CartTotalsSidebar({
   const [referralCode, setReferralCode] = useState("");
 
   // ── Fixed discount lines (mock values per design spec) ──
+  const baseProductTotal = productTotal - addonTotal;
   const discountPromo    = 300;
   const discountReferral = 300;
   const discountVisa     = Math.min(Math.round(productTotal * 0.05), 1500);
@@ -944,8 +955,20 @@ function CartTotalsSidebar({
             <span className="text-slate-600 font-medium">
               Regular Price <span className="text-slate-400 font-normal">({itemLabel} items)</span>
             </span>
-            <span className="font-bold text-slate-900">৳ {productTotal.toLocaleString()}</span>
+            <span className="font-bold text-slate-900">৳ {baseProductTotal.toLocaleString()}</span>
           </div>
+
+          {/* Add-On line */}
+          {addonTotal > 0 && (
+            <div className="flex items-center justify-between text-sm rounded-lg bg-emerald-50 border border-emerald-100 px-3 py-2">
+              <span className="text-emerald-700 font-semibold flex items-center gap-1.5">
+                <Wrench className="w-3.5 h-3.5" />
+                Add-On Services
+                <span className="text-[10px] text-emerald-500 font-normal">(services & products)</span>
+              </span>
+              <span className="font-bold text-emerald-700">+ ৳ {addonTotal.toLocaleString()}</span>
+            </div>
+          )}
 
           {/* Discount lines */}
           <div className="flex items-center justify-between text-sm">
